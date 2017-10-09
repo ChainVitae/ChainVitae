@@ -94,6 +94,7 @@ contract ChainVitae{
     struct vitae{
         string institutionName;
         string employeeName;
+        address employee;
         string positionName;
         date startDate;
         date endDate;
@@ -108,6 +109,7 @@ contract ChainVitae{
     mapping(bytes32 => vitae) _vitaes;
 
     function request(string institutionName, string positionName, uint8 startDay, uint8 startMonth, uint startYear, uint8 endDay, uint8 endMonth, uint endYear) public returns(bytes32){
+        require(isEmployee());
         require(institution[institutionName] != 0);
         require(endYear >= startYear);
         if (endYear == startYear){
@@ -132,6 +134,7 @@ contract ChainVitae{
         _vitaes[hash] = vitae({
             institutionName: institutionName,
             employeeName: employee[msg.sender],
+            employee: msg.sender,
             positionName: positionName, 
             startDate: date({
                 day: startDay,
@@ -148,7 +151,17 @@ contract ChainVitae{
         HashList(requests[institution[institutionName]]).insert(hash);
         return hash;
     }
+    
+    function endorse(bytes32 hash) public{
+        require(institution[_vitaes[hash].institutionName] == msg.sender);
+        address employee = _vitaes[hash].employee;
+        HashList(pending[employee]).remove(hash);
+        HashList(requests[msg.sender]).remove(hash);
+        HashList(vitaes[employee]).insert(hash);
+    }
+    
     function registerEmployee(string employeeName) public returns (address){
+        require(!isEmployee());
         require(institution[employeeName] == 0x0);
         employee[msg.sender] = employeeName;
         pending[msg.sender] = new HashList();
@@ -156,13 +169,32 @@ contract ChainVitae{
         return pending[msg.sender];
     }
     
+    function isEmployee() public returns (bool){
+        return (isEmployee(msg.sender));
+    }
+    
+    function isEmployee(address addr) public returns (bool){
+        return (keccak256(employee[addr]) != keccak256(""));
+    }
+    
     function registerInstitution(string institutionName) public{
         require(keccak256(employee[msg.sender]) == keccak256(""));
+        require(institution[institutionName] == 0);
         institution[institutionName] = msg.sender;
         requests[msg.sender] = new HashList();
     }
+    
+    function isInstitution() public returns (bool){
+        return (isInstitution(msg.sender));
+    }
+    
+    function isInstitution(address addr) public returns (bool){
+        return (true);
+    }
+    
     bytes32[] arr;
     function getPending() public returns (bytes32[]){
+        require(isEmployee());
         arr.length = 0;
         bytes32 current = HashList(pending[msg.sender]).getHead();
         while(current != 0x0){
@@ -171,12 +203,25 @@ contract ChainVitae{
         }
         return arr;
     }
+    
     function getRequests() public returns (bytes32[]){
+        require(isInstitution());
         arr.length = 0;
         bytes32 current = HashList(requests[msg.sender]).getHead();
         while(current != 0x0){
             arr.push(HashList(requests[msg.sender]).getRecord(current));
             current = HashList(requests[msg.sender]).getNext(current);
+        }
+        return arr;
+    }
+    
+    function getVitaes() public returns (bytes32[]){
+        require(isEmployee());
+        arr.length = 0;
+        bytes32 current = HashList(vitaes[msg.sender]).getHead();
+        while (current != 0x0){
+            arr.push(HashList(vitaes[msg.sender]).getRecord(current));
+            current = HashList(vitaes[msg.sender]).getNext(current);
         }
         return arr;
     }
