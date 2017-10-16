@@ -1,1 +1,24 @@
+rm -rf ./testChain
+addr1=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
+addr2=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
+rm ./genesis.json
+printf '{\n' > genesis.json
+printf '    "nonce": "0x0000000000000042",\n' >> genesis.json
+printf '    "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",\n' >> genesis.json
+printf '    "difficulty": "0x4000",\n' >> genesis.json
+printf '    "alloc": {\n' >> genesis.json
+printf '        "%s": {\n' $addr1 >> genesis.json
+printf '            "balance": "10000000000000000000000"\n' >> genesis.json
+printf '        },\n' >> genesis.json
+printf '        "%s": {\n' $addr2 >> genesis.json
+printf '            "balance": "10000000000000000000000"\n' >> genesis.json
+printf '        }\n' >> genesis.json
+printf '    },\n' >> genesis.json
+printf '    "coinbase": "0x0000000000000000000000000000000000000000",\n' >> genesis.json
+printf '    "timestamp": "0x00",\n' >> genesis.json
+printf '    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",\n' >> genesis.json
+printf '    "extraData": "0x",\n' >> genesis.json
+printf '    "gasLimit": "0xffffffff",\n' >> genesis.json
+printf '    "config": {}\n' >> genesis.json
+printf '}\n' >> genesis.json
 geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 init genesis.json

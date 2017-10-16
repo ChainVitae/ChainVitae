@@ -1,1 +1,1 @@
-geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 --rpc --rpccorsdomain "*"  console
+geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*"  console
