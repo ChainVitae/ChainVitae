@@ -1,1 +1,0 @@
-geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 account new
