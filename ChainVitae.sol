@@ -33,7 +33,7 @@ contract ChainVitae{
     mapping(bytes32 => vitae) vitaes;
 
     function request(address institutionAddr, string positionName, uint8 startDay, uint8 startMonth, uint startYear, uint8 endDay, uint8 endMonth, uint endYear) public returns(bytes32){
-        require(isEmployee());
+        require(isEmployee(msg.sender));
         require(keccak256(institution[institutionAddr]) != keccak256(""));
         require(endYear >= startYear);
         if (endYear == startYear){
@@ -144,63 +144,50 @@ contract ChainVitae{
     }
     
     function registerEmployee(string name) public{
-        require(!isEmployee());
+        require(!isEmployee(msg.sender));
         employee[msg.sender] = name;
     }
     
-    function isEmployee() public returns (bool){
-        return (keccak256(employee[msg.sender]) != keccak256(""));
-    }
-    
-    function isEmployee(address addr) public returns (bool){
+    function isEmployee(address addr) public constant returns (bool){
         return (keccak256(employee[addr]) != keccak256(""));
     }
     
     function registerInstitution(string name) public{
-        require(!isInstitution());
+        require(!isInstitution(msg.sender));
         institution[msg.sender] = name;
     }
     
-    function isInstitution() public returns (bool){
-        return (keccak256(institution[msg.sender]) != keccak256(""));
-    }
-    
-    function isInstitution(address addr) public returns (bool){
+    function isInstitution(address addr) public constant returns (bool){
         return (keccak256(institution[addr]) != keccak256(""));
     }
     
-    bytes32[] arr;
-    function getPending() public returns (bytes32[]){
-        require(isEmployee());
-        arr.length = 0;
-        bytes32 current = head[msg.sender][0];
-        while(current != 0x0){
-            arr.push(current);
-            current = records[current].next0;
+    function getPending(bytes32 hash, address addr) public constant returns (bytes32){
+        require(isEmployee(addr));
+        if (hash == 0){
+            return head[addr][0];
         }
-        return arr;
+        else{
+            return records[hash].next0;
+        }
     }
     
-    function getRequests() public returns (bytes32[]){
-        require(isInstitution());
-        arr.length = 0;
-        bytes32 current = head[msg.sender][0];
-        while(current != 0x0){
-            arr.push(current);
-            current = records[current].next1;
+    function getRequests(bytes32 hash, address addr) public constant returns (bytes32){
+        require(isInstitution(addr));
+        if (hash == 0){
+            return head[addr][0];
         }
-        return arr;
+        else{
+            return records[hash].next1;
+        }
     }
     
-    function getVitaes() public returns (bytes32[]){
-        require(isEmployee());
-        arr.length = 0;
-        bytes32 current = head[msg.sender][1];
-        while (current != 0x0){
-            arr.push(current);
-            current = records[current].next0;
+    function getVitaes(bytes32 hash, address addr) public constant returns (bytes32){
+        require(isEmployee(addr));
+        if (hash == 0){
+            return head[addr][1];
         }
-        return arr;
+        else{
+            return records[hash].next0;
+        }
     }
 }
-
