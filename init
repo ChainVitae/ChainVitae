@@ -21,4 +21,4 @@ printf '    "extraData": "0x",\n' >> genesis.json
 printf '    "gasLimit": "0xffffffff",\n' >> genesis.json
 printf '    "config": {}\n' >> genesis.json
 printf '}\n' >> genesis.json
-geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 init genesis.json
+geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --dev --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff init genesis.json
