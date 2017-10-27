@@ -1,14 +1,14 @@
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-var abi = fs.readFileSync('ChainVitae_sol_ChainVitae.abi').toString();
+var abi = fs.readFileSync('chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('addr').toString().trim();
 var contract;
 if (address == undefined){
 	contract = web3.eth.contract(JSON.parse(abi)).new({
 		from: accounts[0],
-		data: fs.readFileSync('ChainVitae_sol_ChainVitae.bin').toString(),
+		data: fs.readFileSync('chainvitae.bin').toString(),
 		gas: '4700000'
 	});
 	address = contract.address;
