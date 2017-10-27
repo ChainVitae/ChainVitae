@@ -3,8 +3,7 @@ const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 var abi = fs.readFileSync('ChainVitae_sol_ChainVitae.abi').toString();
 var accounts = web3.eth.accounts;
-var address;
-address = "0xde27320858E4dD4f22664D2E896C0B51F6D2ED66";
+var address = fs.readFileSync('addr').toString().trim();
 var contract;
 if (address == undefined){
 	contract = web3.eth.contract(JSON.parse(abi)).new({
@@ -13,11 +12,12 @@ if (address == undefined){
 		gas: '4700000'
 	});
 	address = contract.address;
+	fs.writeFileSync('addr', address);
 }
 else{
 	contract = web3.eth.contract(JSON.parse(abi)).at(address);
 }
-if (contract == undefined) throw "contract undefined";
+if (contract == undefined) throw new Error("contract undefined");
 
 function regStatus(contract, accounts){
 	console.log("isEmployee:");
