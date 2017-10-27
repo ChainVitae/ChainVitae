@@ -1,3 +1,4 @@
+rm addr 2>/dev/null
 rm -rf ./testChain
 addr1=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
 addr2=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
