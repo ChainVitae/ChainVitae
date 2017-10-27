@@ -4,19 +4,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 var abi = fs.readFileSync('chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('addr').toString().trim();
-var contract;
-if (address == undefined){
-	contract = web3.eth.contract(JSON.parse(abi)).new({
-		from: accounts[0],
-		data: fs.readFileSync('chainvitae.bin').toString(),
-		gas: '4700000'
-	});
-	address = contract.address;
-	fs.writeFileSync('addr', address);
-}
-else{
-	contract = web3.eth.contract(JSON.parse(abi)).at(address);
-}
+var contract = web3.eth.contract(JSON.parse(abi)).at(address);
 if (contract == undefined) throw new Error("contract undefined");
 
 function regStatus(contract, accounts){
