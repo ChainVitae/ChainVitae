@@ -1,1 +1,0 @@
-geth --mine --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 --verbosity 3 console
