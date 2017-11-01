@@ -5,12 +5,22 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="../node_modules/web3/dist/web3.min.js"/>
   </head>
 
   <body>
     <nav class="navbar sticky-top navbar-light bg-light">
       <a class="navbar-brand"> ChainVitae</a>
-      <a class="mr-5"> Now Login as employee </a>
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+          <span class="caret"/>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a href="#">HTML</a></li>
+          <li><a href="#">CSS</a></li>
+          <li><a href="#">JavaScript</a></li>
+        </ul>
+      </div>
     </nav>
 
     <!-- <div class="container"> -->

@@ -5,6 +5,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </head>
 
   <body>
@@ -21,7 +22,7 @@
               <a class="nav-link active" href="#">Career Record</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="request.html">Request</a>
+              <a class="nav-link" href="/request">Request</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">CV Maker</a>
@@ -32,7 +33,7 @@
           <div class="container">
             <h1 class="text-center top-buffer3"> CV </h1>
             <h3 class+"top-buffer1"> Career Experience</h3>
-            <table class="table table-bordered top-buffer1">
+            <table class="table table-bordered top-buffer1" id="careerBody">
               <thead>
                 <th>#</th>
                 <td>Position</td>
@@ -40,25 +41,11 @@
                 <td>Start Date</td>
                 <td>End Date</td>
               </thead>
-              <tbody>
-                <th>1</th>
-                <td>Engineer</td>
-                <td>Google</td>
-                <td>17 Dec, 2014</td>
-                <td>29 Feb, 2017</td>
-              </tbody>
-              <tbody>
-                <th>2</th>
-                <td>Professor</td>
-                <td>CUHK</td>
-                <td>1 Sep, 2010</td>
-                <td>30 Aug, 2014</td>
-              </tbody>
             </table>
 
             <hr />
 
-            <h3 class="top-buffer3"> Academic History</h3>
+            <!-- <h3 class="top-buffer3"> Academic History</h3>
             <table class="table table-bordered top-buffer1">
               <thead>
                 <th>#</th>
@@ -81,7 +68,7 @@
                 <td>1 Sep, 2002</td>
                 <td>30 Aug, 2008</td>
               </tbody>
-            </table>
+            </table> -->
 
           </div>
         </div>
@@ -89,4 +76,24 @@
     <!-- </div> -->
 
   </body>
+  <script>
+    var vitaes = <%- JSON.stringify(vitae) %>
+
+    if(vitaes.length == 0) {
+      $("#careerBody").append("<tbody>"+
+        "<td colspan='5' class='text-center'>" + "<h1>I got no jobs<h1>" + "</td>"+
+      "</tbody>");
+    }
+
+    for (var i=0; i<vitaes.length;i++) {
+      $("#careerBody").append("<tbody>"+
+        "<th>" + (i+1) +"</th>"+
+        "<td>" + vitaes[i].position + "</td>"+
+        "<td>" + vitaes[i].institution + "</td>"+
+        "<td>" + vitaes[i].from + "</td>"+
+        "<td>" + vitaes[i].to + "</td>"+
+      "</tbody>");
+    }
+
+  </script>
 </html>

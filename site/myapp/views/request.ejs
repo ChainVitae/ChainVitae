@@ -5,6 +5,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </head>
 
   <body>
@@ -18,7 +19,7 @@
         <div class="col-2 px-3" style="background-color: pink; padding-top: 50px">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link active" href="career.html">Career Record</a>
+              <a class="nav-link active" href="/career">Career Record</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Request</a>
@@ -80,35 +81,14 @@
             <hr />
 
             <h3 class="top-buffer3"> Pending </h3>
-            <table class="table table-bordered top-buffer1">
+            <table class="table table-bordered top-buffer1" id="careerBody">
               <thead>
                 <th>#</th>
                 <td>Qualification</td>
                 <td>Institution</td>
                 <td>Start Date</td>
                 <td>End Date</td>
-                <td>Request Sent</td>
               </thead>
-              <tbody>
-                <th>1</th>
-                <td>Undergraduate</td>
-                <td>CUHK</td>
-                <td>1 Sep, 2008</td>
-                <td>30 Aug, 2014 </td>
-                <td>191520:20171026<button type="button" class="close text-center" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button></td>
-              </tbody>
-              <tbody>
-                <th>2</th>
-                <td>Secondary</td>
-                <td>WYK</td>
-                <td>1 Sep, 2002</td>
-                <td>30 Aug, 2008</td>
-                <td>191520:20171026<button type="button" class="close text-center" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button></td>
-              </tbody>
             </table>
           </div>
         </div>
@@ -116,5 +96,26 @@
     <!-- </div> -->
 
   </body>
-  <script> var web3 = require("web3.js")</script>
+  <script>
+    var vitaes = <%- JSON.stringify(vitae) %>
+
+    if(vitaes.length == 0) {
+      $("#careerBody").append("<tbody>"+
+        "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
+      "</tbody>");
+    }
+
+    for (var i=0; i<vitaes.length;i++) {
+      $("#careerBody").append("<tbody>"+
+        "<th>" + (i+1) +"</th>"+
+        "<td>" + vitaes[i].position + "</td>"+
+        "<td>" + vitaes[i].institution + "</td>"+
+        "<td>" + vitaes[i].from + "</td>"+
+        "<td>" + vitaes[i].to + "<button type='button' class='close text-center' aria-label='Close'>" +
+          "<span aria-hidden='true'>&times;</span>" +
+        "</button></td>" +
+      "</tbody>");
+    }
+
+  </script>
 </html>
