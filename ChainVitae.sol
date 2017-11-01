@@ -46,6 +46,7 @@ contract ChainVitae{
         address employeeAddr;
         address institutionAddr;
         bytes32 positionName;
+        bool academic;
         uint startTime;
         uint endTime;
     }
@@ -99,7 +100,7 @@ contract ChainVitae{
      * startTime: see 'vitae'
      * endTime: see 'vitae'
      */
-    function request(address institutionAddr, bytes32 positionName, uint start, uint end) public returns(bytes32){
+    function request(address institutionAddr, bytes32 positionName, bool academic, uint start, uint end) public returns(bytes32){
         // caller must have registered as employee
         require(isEmployee(msg.sender));
         // target must have registered as institution
@@ -109,6 +110,7 @@ contract ChainVitae{
             institutionAddr,
             msg.sender,
             positionName,
+            academic,
             start,
             end
         );
@@ -120,6 +122,7 @@ contract ChainVitae{
                     employeeAddr: msg.sender,
                     institutionAddr: institutionAddr,
                     positionName: positionName, 
+                    academic: academic,
                     startTime: start,
                     endTime: end
                 }),
@@ -354,4 +357,3 @@ contract ChainVitae{
         return records[hash].data.endTime;
     }
 }
-
