@@ -228,10 +228,12 @@ contract ChainVitae{
             records[tail[employeeAddr][1]].next0 = hash;
         }
         tail[employeeAddr][1] = hash;
+	records[hash].next0 = 0x0;
         if (tail[msg.sender][1] != 0){
             records[tail[msg.sender][1]].next1 = hash;
         }
         tail[msg.sender][1] = hash;
+	records[hash].next1 = 0x0;
     }
     
     function registerEmployee(bytes32 name) public{
