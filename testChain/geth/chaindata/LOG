@@ -1,16 +1,16 @@
 =============== Nov 2, 2017 (HKT) ===============
-01:07:57.640290 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-01:07:57.653031 db@open opening
-01:07:57.653707 version@stat F·[] S·0B[] Sc·[]
-01:07:57.657759 db@janitor F·2 G·0
-01:07:57.657799 db@open done T·4.719823ms
+03:53:07.700375 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+03:53:07.713966 db@open opening
+03:53:07.714826 version@stat F·[] S·0B[] Sc·[]
+03:53:07.718392 db@janitor F·2 G·0
+03:53:07.718453 db@open done T·4.398622ms
 =============== Nov 2, 2017 (HKT) ===============
-01:08:04.932051 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
-01:08:04.932161 version@stat F·[] S·0B[] Sc·[]
-01:08:04.932172 db@open opening
-01:08:04.932210 journal@recovery F·1
-01:08:04.932590 journal@recovery recovering @1
-01:08:04.942692 memdb@flush created L0@2 N·14 S·876B "=V\b..\x95\x8a\x99,v5":"\xd5\xe2p..\xb8\f\xd9,v4"
-01:08:04.944624 version@stat F·[1] S·876B[876B] Sc·[0.25]
-01:08:04.953126 db@janitor F·3 G·0
-01:08:04.953215 db@open done T·21.021843ms
+03:54:12.232595 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+03:54:12.232707 version@stat F·[] S·0B[] Sc·[]
+03:54:12.232717 db@open opening
+03:54:12.232760 journal@recovery F·1
+03:54:12.233176 journal@recovery recovering @1
+03:54:12.243409 memdb@flush created L0@2 N·14 S·872B "\x15\xc0\xb2..\x80\xaa\x87,v3":"\xa3\xba\x19..@\x10\xdb,v4"
+03:54:12.244868 version@stat F·[1] S·872B[872B] Sc·[0.25]
+03:54:12.252492 db@janitor F·3 G·0
+03:54:12.252540 db@open done T·19.808531ms
