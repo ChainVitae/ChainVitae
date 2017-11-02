@@ -4,14 +4,29 @@
     <title>ChainVitae</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <style>
+      .dropdown-menu-right {
+        right: 0;
+        left: auto;
+      }
+    </style>
   </head>
 
   <body>
     <nav class="navbar sticky-top navbar-light bg-light">
       <a class="navbar-brand"> ChainVitae</a>
-      <a class="mr-5"> Now Login as employee </a>
+      <div class="dropdown show">
+        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Choose account...
+        </a>
+
+        <div id="accountList" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        </div>
+      </div>
     </nav>
 
     <!-- <div class="container"> -->
@@ -26,6 +41,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">CV Maker</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register</a>
             </li>
           </ul>
         </div>
@@ -45,8 +63,8 @@
 
             <hr />
 
-            <!-- <h3 class="top-buffer3"> Academic History</h3>
-            <table class="table table-bordered top-buffer1">
+            <h3 class="top-buffer3"> Academic History</h3>
+            <table class="table table-bordered top-buffer1" id="academicBody">
               <thead>
                 <th>#</th>
                 <td>Qualification</td>
@@ -54,21 +72,7 @@
                 <td>Start Date</td>
                 <td>End Date</td>
               </thead>
-              <tbody>
-                <th>1</th>
-                <td>Undergraduate</td>
-                <td>CUHK</td>
-                <td>1 Sep, 2008</td>
-                <td>30 Aug, 2014</td>
-              </tbody>
-              <tbody>
-                <th>2</th>
-                <td>Secondary</td>
-                <td>WYK</td>
-                <td>1 Sep, 2002</td>
-                <td>30 Aug, 2008</td>
-              </tbody>
-            </table> -->
+            </table>
 
           </div>
         </div>
@@ -77,21 +81,49 @@
 
   </body>
   <script>
+
+    var accounts = <%- JSON.stringify(accounts) %>;
+    for (var i=0; i<accounts.length; i++){
+      $("#accountList").append(
+        "<a class='dropdown-item href='#'>" +
+        accounts[i] +
+        "</a>");
+    }
+
+    $(".dropdown-menu a").click(function(){
+      $(".btn:first-child").text($(this).text());
+      $(".btn:first-child").val($(this).text());
+
+    });
     var vitaes = <%- JSON.stringify(vitae) %>
 
-    if(vitaes.length == 0) {
+    if(vitaes[false].length == 0) {
       $("#careerBody").append("<tbody>"+
         "<td colspan='5' class='text-center'>" + "<h1>I got no jobs<h1>" + "</td>"+
       "</tbody>");
     }
-
-    for (var i=0; i<vitaes.length;i++) {
+    if(vitaes[true].length == 0) {
+      $("#academicBody").append("<tbody>"+
+        "<td colspan='5' class='text-center'>" + "<h1>I got no jobs<h1>" + "</td>"+
+      "</tbody>");
+    }
+    for (var i=0; i<vitaes[false].length;i++) {
       $("#careerBody").append("<tbody>"+
         "<th>" + (i+1) +"</th>"+
-        "<td>" + vitaes[i].position + "</td>"+
-        "<td>" + vitaes[i].institution + "</td>"+
-        "<td>" + vitaes[i].from + "</td>"+
-        "<td>" + vitaes[i].to + "</td>"+
+        "<td>" + vitaes[false][i].position + "</td>"+
+        "<td>" + vitaes[false][i].institution + "</td>"+
+        "<td>" + vitaes[false][i].from + "</td>"+
+        "<td>" + vitaes[false][i].to + "</td>"+
+      "</tbody>");
+    }
+
+    for (var i=0; i < vitaes[true].length; i++){
+      $("#academicBody").append("<tbody>"+
+        "<th>" + (i+1) +"</th>"+
+        "<td>" + vitaes[true][i].position + "</td>"+
+        "<td>" + vitaes[true][i].institution + "</td>"+
+        "<td>" + vitaes[true][i].from + "</td>"+
+        "<td>" + vitaes[true][i].to + "</td>"+
       "</tbody>");
     }
 

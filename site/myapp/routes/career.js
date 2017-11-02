@@ -91,7 +91,6 @@ function allStatus(contract, accounts){
 	}
 }
 
-regStatus(contract, accounts);
 /*
 if (web3.personal.unlockAccount(accounts[0])){
 	var employeeName = 'aa';
@@ -118,26 +117,26 @@ if (web3.personal.unlockAccount(accounts[1])){
 	contract.endorse(contract.getNextRequest.call(0, accounts[1]), {from: accounts[1], gas: 300000});
 }
 */
-allStatus(contract, accounts);
 
-function getVitaes(acc) {
+function getVitaes(acc, n) {
   var cur = 0;
-  var vitaes = [];
+  var vitaes = {false:[], true:[]};
   var vitae;
-  while (true){
+  while (n >= 0){
     cur = contract.getNextVitae.call(cur, acc);
     if (cur == 0){
       console.log('=== End ===');
       break;
     }
 
-    vitaes.push({
+    vitaes[contract.getAcademic.call(cur)].push({
       employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       from : contract.getStartTime.call(cur).c[0],
       to : contract.getEndTime.call(cur).c[0]
     });
+    n--;
   }
   return vitaes;
 }
@@ -146,8 +145,9 @@ function getVitaes(acc) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var employee = accounts[0];
-  var accetedVitae = getVitaes(employee);
-  res.render('career', { title: 'Express', vitae: accetedVitae });
+  var acceptedVitae = getVitaes(employee, 3);
+  console.log(acceptedVitae);
+  res.render('career', { title: 'Express', vitae: acceptedVitae , accounts: accounts});
 });
 
 module.exports = router;

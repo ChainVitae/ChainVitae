@@ -8,7 +8,8 @@ var bodyParser = require('body-parser');
 var pages = [
   "/",
   "career",
-  "request"
+  "request",
+  "register"
 ]
 
 var app = express();
