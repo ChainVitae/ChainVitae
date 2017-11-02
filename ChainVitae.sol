@@ -349,6 +349,10 @@ contract ChainVitae{
         return records[hash].data.positionName;
     }
     
+    function getAcademic(bytes32 hash) public constant returns (bool){
+        return records[hash].data.academic;
+    }
+
     function getStartTime(bytes32 hash) public constant returns (uint){
         return records[hash].data.startTime;
     }
