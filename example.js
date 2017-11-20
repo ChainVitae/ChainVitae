@@ -26,6 +26,8 @@ function vitaeStatus(vitae){
 		web3.toAscii(contract.getInstitution.call(vitae)));
 	console.log('\tPosition:\t'+
 		web3.toAscii(contract.getPosition.call(vitae)));
+	console.log('\tAcademic:\t'+
+		contract.getAcademic.call(vitae));
 	console.log('\tFrom:\t\t'+
 		contract.getStartTime.call(vitae)+
 		' to '+
@@ -89,30 +91,31 @@ function allStatus(contract, accounts){
 }
 
 regStatus(contract, accounts);
-/*if (web3.personal.unlockAccount(accounts[0])){
+/*
+if (web3.personal.unlockAccount(accounts[0])){
 	var employeeName = 'aa';
 	contract.registerEmployee(web3.fromAscii(employeeName), {from: accounts[0]});
 }
-regStatus(contract, accounts);
-if (web3.personal.unlockAccount(accounts[1])){
-	var institutionName = 'google';
-	contract.registerInstitution(web3.fromAscii(institutionName), {from: accounts[1]});
+if (web3.personal.unlockAccount(accounts[2])){
+	var institutionName = 'CUHK';
+	contract.registerInstitution(web3.fromAscii(institutionName), {from: accounts[2]});
 }
 if (web3.personal.unlockAccount(accounts[0])){
-	var post = 'software engineer';
-	var start = 2016;
-	var end = 2017;
-	contract.request(accounts[1], web3.fromAscii(post), start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
+	var post = 'nothing';
+	var start = 11111;
+	var end = 111111;
+        var academic = false;
+	contract.request(accounts[1], web3.fromAscii(post), academic, start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
 }
-
 if (web3.personal.unlockAccount(accounts[0])){
 	var post = 'janitor';
 	var start = 2017;
 	var end = 2018;
-	contract.request(accounts[1], web3.fromAscii(post), start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
+        var academic = false;
+	contract.request(accounts[1], web3.fromAscii(post), academic, start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
 }
-
 if (web3.personal.unlockAccount(accounts[1])){
 	contract.endorse(contract.getNextRequest.call(0, accounts[1]), {from: accounts[1], gas: 300000});
-}*/
+}
+*/
 allStatus(contract, accounts);
