@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./common/script.ejs %>
+  </head>
+
+  <body>
+    <% include ./common/nav.ejs %>
+    <div class="col-sm-9 off-sm-3 col-md-10 offset-md-2">
+      <div class="container">
+        <h1 class="text-center top-buffer3"> Requests of Experience </h1>
+        <h3 class="top-buffer3"> Requests </h3>
+        <table class="table table-bordered top-buffer1" id="careerBody">
+          <thead>
+            <th>#</th>
+            <td>Employee</td>
+            <td>Qualification</td>
+            <td>Institution</td>
+            <td>Start Date</td>
+            <td>End Date</td>
+            <td>Endorse</td>
+            <td>Cancel</td>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+  </body>
+  <script>
+    var vitaes = <%- JSON.stringify(vitaes) %>;
+    //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
+
+    if(vitaes.length == 0) {
+      $("#careerBody").append("<tbody>"+
+        "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
+      "</tbody>");
+    }
+
+    for (var i=0; i<vitaes.length;i++) {
+      $("#careerBody").append("<tbody>"+
+        "<th>" + (i+1) +"</th>"+
+        "<td>" + vitaes[i].employee+ "</td>"+
+        "<td>" + vitaes[i].position + "</td>"+
+        "<td>" + vitaes[i].institution + "</td>"+
+        "<td>" + vitaes[i].from + "</td>"+
+        "<td>" + vitaes[i].to + "</td>" +
+        "<td>" +
+          "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
+          "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash +
+          "\"'>" +
+        "</td>" +
+        "<td>" +
+          "<input type='button' class='btn btn-danger' value='Refuse' onclick='location.href=\"" +
+          "http://localhost:3001/endorse/refuse?hash=" + vitaes[i].hash +
+           "\"'>" +
+        "</td>" +
+      "</tbody>");
+    }
+
+  </script>
+</html>

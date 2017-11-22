@@ -134,7 +134,8 @@ function getVitaes(acc, n,console) {
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0]
+      to : contract.getEndTime.call(cur).c[0],
+      hash : cur
     });
     n--;
   }
@@ -144,22 +145,24 @@ function getVitaes(acc, n,console) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('register', { title: 'Express', accounts: accounts});
+	var institution = req.query.addr;
+	var requestedVitaes = {};
+	console.log(institution);
+	if (institution != null){
+		requestedVitaes = getVitaes(institution, 10, console);
+	}
+    console.log(requestedVitaes);
+	res.render('endorse', { title: 'Express', vitaes: requestedVitaes, accounts: web3.eth.accounts});
 });
 
-router.post('/submit', function(req, res, next) {
-	var fun;
-	if (req.body.role == 0){
-		fun = contract.registerEmployee;
+router.get('/endorse', function(req, res, next) {
+	if (web3.personal.unlockAccount(req.body.addr)){
+		contract.endorse(
+			req.body.vitae,
+			{from: req.body.addr, gas: 400000}
+		)
+		res.redirect('/endorse');
 	}
-	else
-	if (req.body.role == 1){
-		fun = contract.registerInstitution;
-	}
-	var acc = req.body.address;
-	if (web3.personal.unlockAccount(acc)){
-		fun(web3.fromAscii(req.body.name), {from: acc});
-	}
-	res.redirect('/register');
 })
+
 module.exports = router;

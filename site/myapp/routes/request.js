@@ -152,6 +152,15 @@ router.get('/', function(req, res, next) {
 	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts});
 });
 
+router.get('/test', function(req, res, next) {
+	var employee = req.query.addr;
+    var pendingVitaes = [];
+    if (employee != null){
+        pendingVitaes = getVitaes(employee, 10 ,console);
+    }
+	res.send(JSON.stringify(pendingVitaes));
+});
+
 router.post('/submit', function(req, res, next) {
 	if (web3.personal.unlockAccount(req.body.employee)){
   		contract.request(

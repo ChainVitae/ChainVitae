@@ -16,7 +16,7 @@
               <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
                 <div class="col-lg-9 mr-1">
-                  <input id="yourAddr" class="form-control" name="employee" type="text" placeholder="No address selected" readonly="readonly">
+                  <input id="yourAddr" class="form-control curAddr" name="employee" type="text" placeholder="No address selected" readonly="readonly">
                 </div>
               </div>
               <div class="form-group row top-buffer1">
@@ -73,16 +73,7 @@
 
   </body>
   <script>
-    var accounts = <%- JSON.stringify(accounts) %>;
-    //var accounts = ["0xaskjdhfadsf", "0xsakldfjasdlkjf", "0xadkjf"];
-    for (var i=0; i < accounts.length; i++){
-      $("#accountList").append(
-        "<a class='dropdown-item' href='#'>" +
-        //"<a class='dropdown-item' href='/request?addr=" + accounts[i] + "'>" +
-        accounts[i] +
-        "</a>"
-      );
-    }
+
     var vitaes = <%- JSON.stringify(vitaes) %>;
     //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
 
@@ -103,9 +94,10 @@
         "</button></td>" +
       "</tbody>");
     }
-
+/*
     var selected;
     $(".dropdown-menu a").click(function(){
+      $(".curAddr").text($(this).text());
       $(".btn:first-child").text($(this).text());
       $(".btn:first-child").val($(this).text());
       selected = $(this).text();
@@ -113,6 +105,6 @@
 
     });
     var selected = $("#accountList").find("option:selected").text();
-
+*/
   </script>
 </html>

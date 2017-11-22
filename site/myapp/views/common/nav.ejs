@@ -7,7 +7,7 @@
   <nav class="navbar sticky-top navbar-light" style="background-color: #6A5ACD">
     <a class="navbar-brand"> ChainVitae</a>
     <div class="dropdown show">
-      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <a class="btn btn-secondary dropdown-toggle curAddr" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Choose account...
       </a>
 
@@ -35,10 +35,35 @@
   </nav>
 
   <script>
-
-    //To highlight current tab in left navbar
+    var accounts = <%- JSON.stringify(accounts) %>;
+    for (var i=0; i < accounts.length; i++){
+      $("#accountList").append(
+        "<a class='dropdown-item addr' href='#' onclick='loadVitaes()'>" +
+        //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i] + "'>" +
+        accounts[i] +
+        "</a>"
+      );
+    }
+    function loadVitaes(){
+        $.get('/request/test?addr='+$('.curAddr').text(), {
+            success: function(data){
+                console.log(data);
+            },
+            error: function(){
+                console.log('err');
+            }
+        });
+    }
+    $('.addr').click(function(){
+      $('.curAddr').text($(this).text());
+      $('.curAddr').val($(this).text());
+      sessionStorage.setItem('currentAddress', $(this).text());
+    });
     $(document).ready(function () {
+      $('.curAddr').text(sessionStorage.currentAddress);
+      $('.curAddr').val(sessionStorage.currentAddress);
       $('#nav' + window.location.pathname.substr(1) + '').attr('href', '#');
       $('.nav-pills a[href="#"]').addClass("active");
     });
+
   </script>
