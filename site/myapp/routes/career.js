@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-/*
+
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
@@ -117,7 +117,7 @@ if (web3.personal.unlockAccount(accounts[1])){
 	contract.endorse(contract.getNextRequest.call(0, accounts[1]), {from: accounts[1], gas: 300000});
 }
 */
-/*
+
 function getVitaes(acc, n) {
   var cur = 0;
   var vitaes = {false:[], true:[]};
@@ -140,15 +140,14 @@ function getVitaes(acc, n) {
   }
   return vitaes;
 }
-*/
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  //var employee = accounts[0];
-  //var acceptedVitae = getVitaes(employee, 3);
-  //console.log(acceptedVitae);
-  //res.render('career', { title: 'Express', vitae: acceptedVitae , accounts: accounts});
-	res.render('career', { title: 'Express'});
+  var employee = accounts[0];
+  var acceptedVitae = getVitaes(employee, 3);
+  console.log(acceptedVitae);
+  res.render('career', { title: 'Express', vitae: acceptedVitae , accounts: accounts});
 });
 
 module.exports = router;
