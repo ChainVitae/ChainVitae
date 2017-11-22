@@ -153,14 +153,14 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/submit', function(req, res, next) {
-	if (web3.personal.unlockAccount(req.body.eid)){
+	if (web3.personal.unlockAccount(req.body.employee)){
   		contract.request(
-		    req.body.iid,
+		    req.body.institution,
 		    web3.fromAscii(req.body.position),
 		    true,
 		    req.body.start,
 		    req.body.end,
-		    {from: req.body.eid, gas: 400000}
+		    {from: req.body.employee, gas: 400000}
         );
 		res.redirect('/request');
 	}
