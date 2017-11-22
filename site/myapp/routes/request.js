@@ -144,23 +144,26 @@ function getVitaes(acc, n,console) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var employee = accounts[0];
-  var pendingVitae = getVitaes(employee, 10,console);
-  res.render('request', { title: 'Express', vitae: pendingVitae, accounts: accounts});
+	var employee = req.query.addr;
+    var pendingVitaes = [];
+    if (employee != null){
+        pendingVitaes = getVitaes(employee, 10 ,console);
+    }
+	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts});
 });
 
 router.post('/submit', function(req, res, next) {
-  if (web3.personal.unlockAccount(accounts[0])){
-  	contract.request(
-      req.body.address,
-      web3.fromAscii(req.body.position),
-      true,
-      req.body.start,
-      req.body.end,
-      {from: accounts[0], gas: 400000});
-
-      res.redirect('/request');
-  }
+	if (web3.personal.unlockAccount(req.body.eid)){
+  		contract.request(
+		    req.body.iid,
+		    web3.fromAscii(req.body.position),
+		    true,
+		    req.body.start,
+		    req.body.end,
+		    {from: req.body.eid, gas: 400000}
+        );
+		res.redirect('/request');
+	}
 })
 
 module.exports = router;

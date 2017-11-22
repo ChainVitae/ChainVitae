@@ -14,6 +14,12 @@
           <div class="card-block">
             <form class="form" role="form" method="post" action="/request/submit" autocomplete="off">
               <div class="form-group row top-buffer1">
+                <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
+                <div class="col-lg-9 mr-1">
+                  <input class="form-control" disabled name="address" type="text" placeholder="No address selected">
+                </div>
+              </div>
+              <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Company Addr</label>
                 <div class="col-lg-9 mr-1">
                   <input class="form-control" name="address" type="text" placeholder="Ethereum address of the Company">
@@ -67,14 +73,17 @@
 
   </body>
   <script>
-  var accounts = ["cabigon", "aa"];
-  for (var i=0; i<accounts.length; i++){
-    $("#accountList").append(
-      "<a class='dropdown-item' href='/request?" + accounts[i] + "'>" +
-      accounts[i] +
-      "</a>");
+    var accounts = <%- JSON.stringify(accounts) %>;
+    //var accounts = ["cabigon", "aa"];
+    for (var i=0; i < accounts.length; i++){
+      $("#accountList").append(
+        "<a class='dropdown-item' href='/request?addr=" + accounts[i] + "'>" +
+        accounts[i] +
+        "</a>"
+      );
     }
-    var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
+    var vitaes = <%- JSON.stringify(vitaes) %>;
+    //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
 
     if(vitaes.length == 0) {
       $("#careerBody").append("<tbody>"+

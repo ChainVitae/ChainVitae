@@ -122,21 +122,41 @@ function getVitaes(acc, n) {
   var cur = 0;
   var vitaes = {false:[], true:[]};
   var vitae;
-  while (n >= 0){
-    cur = contract.getNextVitae.call(cur, acc);
-    if (cur == 0){
-      console.log('=== End ===');
-      break;
-    }
+  if (n > 0){
+    while (n >= 0){
+      cur = contract.getNextVitae.call(cur, acc);
+      if (cur == 0){
+        console.log('=== End ===');
+        break;
+      }
 
-    vitaes[contract.getAcademic.call(cur)].push({
-      employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
-      institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
-      position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
-      from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0]
-    });
-    n--;
+      vitaes[contract.getAcademic.call(cur)].push({
+        employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
+        institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
+        position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
+        from : contract.getStartTime.call(cur).c[0],
+        to : contract.getEndTime.call(cur).c[0]
+      });
+      n--;
+    }
+  }
+  else{
+    while (true){
+      cur = contract.getNextVitae.call(cur, acc);
+      if (cur == 0){
+        console.log('=== End ===');
+        break;
+      }
+
+      vitaes[contract.getAcademic.call(cur)].push({
+        employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
+        institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
+        position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
+        from : contract.getStartTime.call(cur).c[0],
+        to : contract.getEndTime.call(cur).c[0]
+      });
+      n--;
+    }
   }
   return vitaes;
 }
@@ -144,10 +164,15 @@ function getVitaes(acc, n) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var employee = accounts[0];
-  var acceptedVitae = getVitaes(employee, 3);
-  console.log(acceptedVitae);
-  res.render('career', { title: 'Express', vitae: acceptedVitae , accounts: accounts});
+  var employee = req.query.addr;
+  var acceptedVitaes = {false:[], true:[]};
+  if (employee != null){
+      console.log(employee);
+      accStatus(contract, employee);
+    acceptedVitaes = getVitaes(employee, 0);
+  }
+  console.log(acceptedVitaes);
+  res.render('career', { title: 'Express', vitaes: acceptedVitaes , accounts: web3.eth.accounts});
 });
 
 module.exports = router;

@@ -42,17 +42,19 @@
   </body>
   <script>
 
-    var accounts = ["cabigon", "aa"];
+    var accounts = <%- JSON.stringify(accounts) %>;
+    /*var accounts = ["cabigon", "aa"];*/
     for (var i=0; i<accounts.length; i++){
       $("#accountList").append(
-        "<a class='dropdown-item' href='/career?" + accounts[i] + "'>" +
+        "<a class='dropdown-item' href='/career?addr=" + accounts[i] + "'>" +
         accounts[i] +
         "</a>");
       }
-    var vitaes = {
+    var vitaes = <%- JSON.stringify(vitaes) %>;
+    /*var vitaes = {
       false: [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}],
       true: []
-    };
+    };*/
     if(vitaes[false].length == 0) {
       $("#careerBody").append("<tbody>"+
         "<td colspan='5' class='text-center'>" + "<h1>I get no jobs<h1>" + "</td>"+
