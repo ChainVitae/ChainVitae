@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ChainVitae</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="/stylesheets/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <% include ./common/script.ejs %>
     <style>
       .dropdown-menu-right {
         right: 0;
@@ -17,94 +11,56 @@
   </head>
 
   <body>
-    <nav class="navbar sticky-top navbar-light bg-light">
-      <a class="navbar-brand"> ChainVitae</a>
-      <div class="dropdown show">
-        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Choose account...
-        </a>
-
-        <div id="accountList" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-        </div>
-      </div>
-    </nav>
-
-    <!-- <div class="container"> -->
-      <div class="row container-fluid sidebar">
-        <div class="col-2 px-3" style="background-color: pink; padding-top: 50px">
-          <ul class="nav flex-column">
-            <li class="nav-item">
-              <a class="nav-link active" href="#">Career Record</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/request">Request</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">CV Maker</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/register">Register</a>
-            </li>
-          </ul>
-        </div>
-        <div class="col-10">
-          <div class="container">
-            <h1 class="text-center top-buffer3"> CV </h1>
-            <h3 class+"top-buffer1"> Career Experience</h3>
-            <table class="table table-bordered top-buffer1" id="careerBody">
-              <thead>
-                <th>#</th>
-                <td>Position</td>
-                <td>Company</td>
-                <td>Start Date</td>
-                <td>End Date</td>
-              </thead>
-            </table>
-
+    <% include ./common/nav.ejs %>
+      <div class="col-sm-9 off-sm-3 col-md-10 offset-md-2">
+        <div class="container">
+          <h1 class="text-center top-buffer3"> CV </h1>
+          <h3 class+"top-buffer1"> Career Experience</h3>
+          <table class="table table-bordered top-buffer1" id="careerBody">
+            <thead>
+              <th>#</th>
+              <td>Position</td>
+              <td>Company</td>
+              <td>Start Date</td>
+              <td>End Date</td>
+            </thead>
+          </table>
             <hr />
-
             <h3 class="top-buffer3"> Academic History</h3>
-            <table class="table table-bordered top-buffer1" id="academicBody">
-              <thead>
-                <th>#</th>
-                <td>Qualification</td>
-                <td>Institution</td>
-                <td>Start Date</td>
-                <td>End Date</td>
-              </thead>
-            </table>
-
+          <table class="table table-bordered top-buffer1" id="academicBody">
+            <thead>
+              <th>#</th>
+              <td>Qualification</td>
+              <td>Institution</td>
+              <td>Start Date</td>
+              <td>End Date</td>
+            </thead>
+          </table>
           </div>
-        </div>
       </div>
-    <!-- </div> -->
 
   </body>
   <script>
 
-    var accounts = <%- JSON.stringify(accounts) %>;
+    var accounts = ["cabigon", "aa"];
     for (var i=0; i<accounts.length; i++){
       $("#accountList").append(
-        "<a class='dropdown-item href='#'>" +
+        "<a class='dropdown-item' href='/career?" + accounts[i] + "'>" +
         accounts[i] +
         "</a>");
-    }
-
-    $(".dropdown-menu a").click(function(){
-      $(".btn:first-child").text($(this).text());
-      $(".btn:first-child").val($(this).text());
-
-    });
-    var vitaes = <%- JSON.stringify(vitae) %>
-
+      }
+    var vitaes = {
+      false: [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}],
+      true: []
+    };
     if(vitaes[false].length == 0) {
       $("#careerBody").append("<tbody>"+
-        "<td colspan='5' class='text-center'>" + "<h1>I got no jobs<h1>" + "</td>"+
+        "<td colspan='5' class='text-center'>" + "<h1>I get no jobs<h1>" + "</td>"+
       "</tbody>");
     }
     if(vitaes[true].length == 0) {
       $("#academicBody").append("<tbody>"+
-        "<td colspan='5' class='text-center'>" + "<h1>I got no jobs<h1>" + "</td>"+
+        "<td colspan='5' class='text-center'>" + "<h1>I get no schools<h1>" + "</td>"+
       "</tbody>");
     }
     for (var i=0; i<vitaes[false].length;i++) {
