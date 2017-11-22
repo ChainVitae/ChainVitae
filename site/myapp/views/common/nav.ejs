@@ -1,0 +1,37 @@
+  <nav class="navbar sticky-top navbar-light" style="background-color: #6A5ACD">
+    <a class="navbar-brand"> ChainVitae</a>
+    <div class="dropdown show">
+      <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Choose account...
+      </a>
+
+      <div id="accountList" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+      </div>
+    </div>
+  </nav>
+  <!-- sidebar -->
+  <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" style="background-color: #F0FFF0">
+    <ul class="nav flex-columnn nav-pills">
+      <li class="nav-item">
+        <a class="nav-link" id="navcareer" href="/career">Career Record</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="navrequest" href="/request">Request</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" id="navcvmaker" href="/cvmaker">CV Maker</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="navregister" href="/register">Register</a>
+      </li>
+    </ul>
+  </nav>
+
+  <script>
+
+    //To highlight current tab in left navbar
+    $(document).ready(function () {
+      $('#nav' + window.location.pathname.substr(1) + '').attr('href', '#');
+      $('.nav-pills a[href="#"]').addClass("active");
+    });
+  </script>

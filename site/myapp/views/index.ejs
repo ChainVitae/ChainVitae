@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <% include ./common/script.ejs %>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <% include ./common/nav.ejs %>
+
+    <div class="col-sm-9 off-sm-3 col-md-10 offset-md-2">
+      hello
+    </div>
   </body>
 </html>
