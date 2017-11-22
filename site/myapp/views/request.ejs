@@ -16,7 +16,7 @@
               <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
                 <div class="col-lg-9 mr-1">
-                  <input class="form-control" disabled name="address" type="text" placeholder="No address selected">
+                  <input id="yourAddr" class="form-control" disabled name="address" type="text" placeholder="No address selected">
                 </div>
               </div>
               <div class="form-group row top-buffer1">
@@ -74,9 +74,10 @@
   </body>
   <script>
     var accounts = <%- JSON.stringify(accounts) %>;
-    //var accounts = ["cabigon", "aa"];
+    //var accounts = ["0xaskjdhfadsf", "0xsakldfjasdlkjf", "0xadkjf"];
     for (var i=0; i < accounts.length; i++){
       $("#accountList").append(
+        //"<a class='dropdown-item' href='#'>" +
         "<a class='dropdown-item' href='/request?addr=" + accounts[i] + "'>" +
         accounts[i] +
         "</a>"
@@ -102,6 +103,16 @@
         "</button></td>" +
       "</tbody>");
     }
+
+    var selected;
+    $(".dropdown-menu a").click(function(){
+      $(".btn:first-child").text($(this).text());
+      $(".btn:first-child").val($(this).text());
+      selected = $(this).text();
+      $("#yourAddr").attr("placeholder", selected);
+
+    });
+    var selected = $("#accountList").find("option:selected").text();
 
   </script>
 </html>
