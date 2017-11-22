@@ -12,7 +12,7 @@
         <h3 class="top-buffer1">Request Details</h3>
         <div class="card card-outline-secondary top-buffer1">
           <div class="card-block">
-            <form class="form" role="form" method="post" action="/request/submit" autocomplete="off">
+            <form name="requestForm" class="form" role="form" method="post" action="/request/submit" autocomplete="off" onsubmit="return validateForm()">
               <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
                 <div class="col-lg-9 mr-1">
@@ -21,26 +21,28 @@
               </div>
               <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Company Addr</label>
-                <div class="col-lg-9 mr-1">
+                <div class="col-lg-9 mr-1" id="yourInstitution">
                   <input class="form-control" name="institution" type="text" placeholder="Ethereum address of the Company">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Positon</label>
-                <div class="col-lg-9 mr-1">
+                <div class="col-lg-9 mr-1" id="yourPosition">
                   <input class="form-control" name="position" type="text" placeholder="Position Title">
+                  <div class='invalid-feedback'>The name cannot exceed 32 characters</div>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Start Date</label>
-                <div class="col-lg-9 mr-1">
+                <div class="col-lg-9 mr-1" id="yourStart">
                   <input class="form-control" name="start" type="text" placeholder="Date when the job started">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-lg-2 col-form-label form-control-label text-center">End Date</label>
-                <div class="col-lg-9 mr-1">
+                <div class="col-lg-9 mr-1" id="yourEnd">
                   <input class="form-control" name="end" type="text" placeholder="Date when the job ended">
+                  <div class="invalid-feedback">The end date should come after the start date</div>
                 </div>
               </div>
               <div class="form-group row">
@@ -73,6 +75,35 @@
 
   </body>
   <script>
+    var yourAddr = <%- JSON.stringify(employee) %>;
+
+    var addrIndex;
+
+    $(document).ready(function() {
+      $("#accountList li a")[addrIndex].click();
+    });
+
+    for (var i=0; i < accounts.length; i++){
+      if(accounts[i] == yourAddr) {
+        addrIndex = i;
+        $("#accountList").append(
+          //"<a class='dropdown-item' href='#'>" +
+          "<li><a class='dropdown-item text-right' href='#' value=" + accounts[i] + ">" +
+          "name" + "<br/><small style='color: #D3D3D3'>" +
+          accounts[i] +
+          "</small></a></li> "
+        );
+      }
+      else {
+        $("#accountList").append(
+          //"<a class='dropdown-item' href='#'>" +
+          "<li><a class='dropdown-item text-right' href='/request?addr=" + accounts[i] + "' value=" + accounts[i] + ">" +
+          "name" + "<br/><small style='color: #D3D3D3'>" +
+          accounts[i] +
+          "</small></a></li> "
+        );
+      }
+    }
 
     var vitaes = <%- JSON.stringify(vitaes) %>;
     //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
@@ -94,17 +125,38 @@
         "</button></td>" +
       "</tbody>");
     }
-/*
-    var selected;
-    $(".dropdown-menu a").click(function(){
-      $(".curAddr").text($(this).text());
-      $(".btn:first-child").text($(this).text());
-      $(".btn:first-child").val($(this).text());
-      selected = $(this).text();
-      $("#yourAddr").attr("value", selected);
-
+    $("#accountList a").click(function(){
+      $("#dropdownMenuLink").text($(this).text());
+      $("#dropdownMenuLink").val($(this).text());
+      $("#yourAddr").attr("value", yourAddr);
     });
-    var selected = $("#accountList").find("option:selected").text();
-*/
+
+    function validateForm() {
+      var employee = document.forms["requestForm"]["employee"].value;
+      var position = document.forms["requestForm"]["position"].value;
+      var institution = document.forms["requestForm"]["institution"].value;
+      var start = document.forms["requestForm"]["start"].value;
+      var end = document.forms["requestForm"]["end"].value;
+
+      var pass = true;
+
+      if(position.length>32) {
+        $("#yourPosition .invalid-feedback").css({"display":"block"});
+        pass = false;
+      }
+      else {
+        $("#yourPosition .invalid-feedback").css({"display":"none"});
+      }
+      if(end < start) {
+        $("#yourEnd .invalid-feedback").css({"display":"block"});
+        pass = false;
+      }
+      else {
+        $("#yourEnd .invalid-feedback").css({"display":"none"});
+      }
+
+      return pass;
+
+    }
   </script>
 </html>

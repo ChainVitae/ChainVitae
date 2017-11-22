@@ -149,7 +149,7 @@ router.get('/', function(req, res, next) {
     if (employee != null){
         pendingVitaes = getVitaes(employee, 10 ,console);
     }
-	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts});
+	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts, employee: employee});
 });
 
 router.get('/test', function(req, res, next) {
