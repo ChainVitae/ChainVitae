@@ -12,11 +12,11 @@
         <h3 class="top-buffer1">Register</h3>
         <div class="card card-outline-secondary top-buffer1">
           <div class="card-block">
-            <form class="form" role="form" method="post" action="/register/employee" autocomplete="off">
-                <div class="form-group row top-buffer3">
+            <form class="form" role="form" method="post" action="/register/submit" autocomplete="off">
+              <div class="form-group row top-buffer3">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Address</label>
                 <div class="col-lg-9 mr-1">
-                  <input name="address" class="form-control" type="text" placeholder="0x0">
+                  <input name="address" class="form-control curAddr" type="text" placeholder="No address selected" readonly="readonly">
                 </div>
               </div>
               <div class="form-group row top-buffer3">
@@ -25,21 +25,13 @@
                   <input name="name" class="form-control" type="text" placeholder="cabi">
                 </div>
               </div>
-              <div class="text-right">
-                 <button type="submit" class="btn-info btn"> Send </button>
-              </div>
-            </form>
-            <form class="form" role="form" method="post" action="/register/institution" autocomplete="off">
               <div class="form-group row top-buffer3">
-                <label class="col-lg-2 col-form-label form-control-label text-center">Address</label>
+                <label class="col-lg-2 col-form-label text-center" for="role">Role</label>
                 <div class="col-lg-9 mr-1">
-                  <input name="address" class="form-control" type="text" placeholder="0x0">
-                </div>
-              </div>
-              <div class="form-group row top-buffer3">
-                <label class="col-lg-2 col-form-label form-control-label text-center">Your name</label>
-                <div class="col-lg-9 mr-1">
-                  <input name="name" class="form-control" type="text" placeholder="cabi">
+                  <select class="form-control" id="role">
+                    <option value='0'>Employee</option>
+                    <option value='1'>Institution</option>
+                  </select>
                 </div>
               </div>
               <div class="text-right">

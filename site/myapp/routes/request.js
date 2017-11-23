@@ -118,7 +118,7 @@ if (web3.personal.unlockAccount(accounts[1])){
 }
 */
 
-function getVitaes(acc, n,console) {
+function getVitaes(acc, n, console) {
   var cur = 0;
   var vitaes = [];
   var vitae;
@@ -152,7 +152,7 @@ router.get('/', function(req, res, next) {
 	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts, employee: employee});
 });
 
-router.get('/test', function(req, res, next) {
+router.get('/ajax', function(req, res, next) {
 	var employee = req.query.addr;
     var pendingVitaes = [];
     if (employee != null){

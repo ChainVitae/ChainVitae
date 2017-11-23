@@ -42,14 +42,41 @@
   </body>
   <script>
 
-    var accounts = <%- JSON.stringify(accounts) %>;
-    /*var accounts = ["cabigon", "aa"];*/
-    for (var i=0; i<accounts.length; i++){
-      $("#accountList").append(
-        "<a class='dropdown-item' href='/career?addr=" + accounts[i] + "'>" +
-        accounts[i] +
-        "</a>");
-      }
+    function loadVitaes(){
+        $('#careerBody > tbody').remove();
+        $('#academicBody > tbody').remove();
+        $.get('/career/ajax?addr='+$('.curAddr#dropdownMenuLink').text(), function(vitaes){
+            if(vitaes[false].length == 0) {
+              $("#careerBody").append("<tbody>"+
+                "<td colspan='5' class='text-center'>" + "<h1>I get no jobs<h1>" + "</td>"+
+              "</tbody>");
+            }
+            if(vitaes[true].length == 0) {
+              $("#academicBody").append("<tbody>"+
+                "<td colspan='5' class='text-center'>" + "<h1>I get no schools<h1>" + "</td>"+
+              "</tbody>");
+            }
+            for (var i=0; i<vitaes[false].length;i++) {
+              $("#careerBody").append("<tbody>"+
+                "<th>" + (i+1) +"</th>"+
+                "<td>" + vitaes[false][i].position + "</td>"+
+                "<td>" + vitaes[false][i].institution + "</td>"+
+                "<td>" + vitaes[false][i].from + "</td>"+
+                "<td>" + vitaes[false][i].to + "</td>"+
+              "</tbody>");
+            }
+
+            for (var i=0; i < vitaes[true].length; i++){
+              $("#academicBody").append("<tbody>"+
+                "<th>" + (i+1) +"</th>"+
+                "<td>" + vitaes[true][i].position + "</td>"+
+                "<td>" + vitaes[true][i].institution + "</td>"+
+                "<td>" + vitaes[true][i].from + "</td>"+
+                "<td>" + vitaes[true][i].to + "</td>"+
+              "</tbody>");
+            }
+        });
+    }
     var vitaes = <%- JSON.stringify(vitaes) %>;
     /*var vitaes = {
       false: [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}],

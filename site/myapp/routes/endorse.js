@@ -123,7 +123,7 @@ function getVitaes(acc, n,console) {
   var vitaes = [];
   var vitae;
   while (n >= 0){
-    cur = contract.getNextPending.call(cur, acc);
+    cur = contract.getNextRequest.call(cur, acc);
     console.log(cur);
     if (cur == 0){
       console.log('=== End ===');
@@ -153,6 +153,17 @@ router.get('/', function(req, res, next) {
 	}
     console.log(requestedVitaes);
 	res.render('endorse', { title: 'Express', vitaes: requestedVitaes, accounts: web3.eth.accounts});
+});
+
+router.get('/ajax', function(req, res, next){
+	var institution = req.query.addr;
+	var requestedVitaes = {};
+	console.log(institution);
+	if (institution != null){
+		requestedVitaes = getVitaes(institution, 10, console);
+	}
+    console.log(requestedVitaes);
+    res.send(requestedVitaes);
 });
 
 router.get('/endorse', function(req, res, next) {

@@ -148,18 +148,22 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/submit', function(req, res, next) {
-	var fun;
+    var acc = req.body.address;
 	if (req.body.role == 0){
-		fun = contract.registerEmployee;
+        if (web3.personal.unlockAccount(acc)){
+            contract.registerEmployee(web3.fromAscii(req.body.name), {from: acc});
+        }
 	}
 	else
 	if (req.body.role == 1){
-		fun = contract.registerInstitution;
+        if (web3.personal.unlockAccount(acc)){
+            contract.registerInstitution(web3.fromAscii(req.body.name), {from: acc});
+        }
 	}
-	var acc = req.body.address;
-	if (web3.personal.unlockAccount(acc)){
-		fun(web3.fromAscii(req.body.name), {from: acc});
-	}
+	//var acc = req.body.address;
+	//if (web3.personal.unlockAccount(acc)){
+//		fun(web3.fromAscii(req.body.name), {from: acc});
+//	}
 	res.redirect('/register');
 })
 module.exports = router;

@@ -27,6 +27,39 @@
 
   </body>
   <script>
+
+    function loadVitaes(){
+        $('#careerBody > tbody').remove();
+        $.get('/endorse/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
+            console.log(vitaes);
+            if(vitaes.length == 0) {
+              $("#careerBody").append("<tbody>"+
+                "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
+              "</tbody>");
+            }
+
+            for (var i=0; i<vitaes.length;i++) {
+              $("#careerBody").append("<tbody>"+
+                "<th>" + (i+1) +"</th>"+
+                "<td>" + vitaes[i].employee+ "</td>"+
+                "<td>" + vitaes[i].position + "</td>"+
+                "<td>" + vitaes[i].institution + "</td>"+
+                "<td>" + vitaes[i].from + "</td>"+
+                "<td>" + vitaes[i].to + "</td>" +
+                "<td>" +
+                  "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
+                  "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash +
+                  "\"'>" +
+                "</td>" +
+                "<td>" +
+                  "<input type='button' class='btn btn-danger' value='Refuse' onclick='location.href=\"" +
+                  "http://localhost:3001/endorse/refuse?hash=" + vitaes[i].hash +
+                   "\"'>" +
+                "</td>" +
+              "</tbody>");
+            }
+        });
+    }
     var vitaes = <%- JSON.stringify(vitaes) %>;
     //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
 

@@ -12,7 +12,6 @@
       </a>
 
       <div id="accountList" class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-        <a class="dropdown-item text-right" href="#">hello <br /><small style="color: #D3D3D3">123672834-0598230958-0589487</small></a>
       </div>
     </div>
   </nav>
@@ -31,6 +30,9 @@
       <li class="nav-item">
         <a class="nav-link" id="navregister" href="/register">Register</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="navendorse" href="/endorse">Endorse</a>
+      </li>
     </ul>
   </nav>
 
@@ -38,26 +40,17 @@
     var accounts = <%- JSON.stringify(accounts) %>;
     for (var i=0; i < accounts.length; i++){
       $("#accountList").append(
-        "<a class='dropdown-item addr' href='#' onclick='loadVitaes()'>" +
+        "<li><a class='dropdown-item addr text-right' href='#' onclick='loadVitaes()'>" +
         //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i] + "'>" +
+        "name" + "<br/><small style='color: #D3D3D3'>" +
         accounts[i] +
-        "</a>"
+        "</small></a></li>"
       );
     }
-    function loadVitaes(){
-        $.get('/request/test?addr='+$('.curAddr').text(), {
-            success: function(data){
-                console.log(data);
-            },
-            error: function(){
-                console.log('err');
-            }
-        });
-    }
     $('.addr').click(function(){
-      $('.curAddr').text($(this).text());
-      $('.curAddr').val($(this).text());
-      sessionStorage.setItem('currentAddress', $(this).text());
+      $('.curAddr').text($(this).find("small").text());
+      $('.curAddr').val($(this).find("small").text());
+      sessionStorage.setItem('currentAddress', $(this).find('small').text());
     });
     $(document).ready(function () {
       $('.curAddr').text(sessionStorage.currentAddress);

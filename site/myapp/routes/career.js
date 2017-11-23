@@ -175,4 +175,15 @@ router.get('/', function(req, res, next) {
   res.render('career', { title: 'Express', vitaes: acceptedVitaes , accounts: web3.eth.accounts});
 });
 
+router.get('/ajax', function(req, res, next) {
+  var employee = req.query.addr;
+  var acceptedVitaes = {false:[], true:[]};
+  if (employee != null){
+      console.log(employee);
+      accStatus(contract, employee);
+    acceptedVitaes = getVitaes(employee, 0);
+  }
+  console.log(acceptedVitaes);
+  res.send(acceptedVitaes);
+});
 module.exports = router;
