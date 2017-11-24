@@ -41,8 +41,8 @@ function accStatus(contract, acc){
 		console.log("Pending:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextPending.call(cur, acc);
-			if (cur == 0){
+			cur = contract.getNextPending.call(cur, acc, {from: acc});
+            if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -51,8 +51,8 @@ function accStatus(contract, acc){
 		console.log("Vitaes:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextVitae.call(cur, acc);
-			if (cur == 0){
+			cur = contract.getNextVitae.call(cur, acc, {from: acc});
+            if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -63,8 +63,8 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc);
-			if (cur == 0){
+			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+            if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -73,8 +73,8 @@ function accStatus(contract, acc){
 		console.log("Endorsed:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextEndorsed.call(cur, acc);
-			if (cur == 0){
+			cur = contract.getNextEndorsed.call(cur, acc, {from: acc});
+            if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -91,41 +91,12 @@ function allStatus(contract, accounts){
 	}
 }
 
-/*
-if (web3.personal.unlockAccount(accounts[0])){
-	var employeeName = 'aa';
-	contract.registerEmployee(web3.fromAscii(employeeName), {from: accounts[0]});
-}
-if (web3.personal.unlockAccount(accounts[1])){
-	var institutionName = 'google';
-	contract.registerInstitution(web3.fromAscii(institutionName), {from: accounts[1]});
-}
-if (web3.personal.unlockAccount(accounts[0])){
-	var post = 'software engineer';
-	var start = 2016;
-	var end = 2017;
-	contract.request(accounts[1], web3.fromAscii(post), start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
-}
-
-if (web3.personal.unlockAccount(accounts[0])){
-	var post = 'janitor';
-	var start = 2017;
-	var end = 2018;
-	contract.request(accounts[1], web3.fromAscii(post), start, end, {from: accounts[0], gas: 400000}, function(err, res){if (err) console.log(err); else console.log(res);});
-}
-if (web3.personal.unlockAccount(accounts[1])){
-	contract.endorse(contract.getNextRequest.call(0, accounts[1]), {from: accounts[1], gas: 300000});
-}
-*/
-
 function getVitaes(acc, n, console) {
   var cur = 0;
   var vitaes = [];
-  var vitae;
   while (n >= 0){
-    cur = contract.getNextPending.call(cur, acc);
-    console.log(cur);
-    if (cur == 0){
+    cur = contract.getNextPending.call(cur, acc, {from: acc});
+    if (cur == 0 || cur === '0x'){
       console.log('=== End ===');
       break;
     }
@@ -158,11 +129,13 @@ router.get('/ajax', function(req, res, next) {
     if (employee != null){
         pendingVitaes = getVitaes(employee, 10 ,console);
     }
-	res.send(JSON.stringify(pendingVitaes));
+    console.log(typeof(pendingVitaes));
+	res.send(pendingVitaes);
 });
 
 router.post('/submit', function(req, res, next) {
 	if (web3.personal.unlockAccount(req.body.employee)){
+        console.log('a')
   		contract.request(
 		    req.body.institution,
 		    web3.fromAscii(req.body.position),

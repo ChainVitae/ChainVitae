@@ -75,47 +75,50 @@
 
   </body>
   <script>
+
     function loadVitaes(){
         $('#careerBody > tbody').remove();
         $.get('request/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
-            if(vitaes.length == 0) {
+            if(vitaes.length === 0) {
               $("#careerBody").append("<tbody>"+
                 "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
               "</tbody>");
             }
-
-            for (var i=0; i<vitaes.length;i++) {
-              $("#careerBody").append("<tbody>"+
-                "<th>" + (i+1) +"</th>"+
-                "<td>" + vitaes[i].position + "</td>"+
-                "<td>" + vitaes[i].institution + "</td>"+
-                "<td>" + vitaes[i].from + "</td>"+
-                "<td>" + vitaes[i].to + "<button type='button' class='close text-center' aria-label='Close'>" +
-                  "<span aria-hidden='true'>&times;</span>" +
-                "</button></td>" +
-              "</tbody>");
+            else{
+                for (var i=0; i<vitaes.length;i++) {
+                  $("#careerBody").append("<tbody>"+
+                    "<th>" + (i+1) +"</th>"+
+                    "<td>" + vitaes[i].position + "</td>"+
+                    "<td>" + vitaes[i].institution + "</td>"+
+                    "<td>" + vitaes[i].from + "</td>"+
+                    "<td>" + vitaes[i].to + "<button type='button' class='close text-center' aria-label='Close'>" +
+                      "<span aria-hidden='true'>&times;</span>" +
+                    "</button></td>" +
+                  "</tbody>");
+                }
             }
         });
     }
     var vitaes = <%- JSON.stringify(vitaes) %>;
     //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
 
-    if(vitaes.length == 0) {
+    if(vitaes.length === 0) {
       $("#careerBody").append("<tbody>"+
         "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
       "</tbody>");
     }
-
-    for (var i=0; i<vitaes.length;i++) {
-      $("#careerBody").append("<tbody>"+
-        "<th>" + (i+1) +"</th>"+
-        "<td>" + vitaes[i].position + "</td>"+
-        "<td>" + vitaes[i].institution + "</td>"+
-        "<td>" + vitaes[i].from + "</td>"+
-        "<td>" + vitaes[i].to + "<button type='button' class='close text-center' aria-label='Close'>" +
-          "<span aria-hidden='true'>&times;</span>" +
-        "</button></td>" +
-      "</tbody>");
+    else{
+        for (var i=0; i<vitaes.length;i++) {
+          $("#careerBody").append("<tbody>"+
+            "<th>" + (i+1) +"</th>"+
+            "<td>" + vitaes[i].position + "</td>"+
+            "<td>" + vitaes[i].institution + "</td>"+
+            "<td>" + vitaes[i].from + "</td>"+
+            "<td>" + vitaes[i].to + "<button type='button' class='close text-center' aria-label='Close'>" +
+              "<span aria-hidden='true'>&times;</span>" +
+            "</button></td>" +
+          "</tbody>");
+        }
     }
     $("#accountList a").click(function(){
       $('.curAddr').text(sessionStorage.currentAddress);
