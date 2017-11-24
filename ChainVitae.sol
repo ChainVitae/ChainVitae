@@ -85,13 +85,18 @@ contract ChainVitae{
      * bytes32 is used to limit string size.
      */
     mapping(address => bytes32) employee;
+    function getEmployee(address employeeAddr) public constant returns (bytes32){
+        return employee[employeeAddr];
+    }
     /*
      * institution
      *
      * similar to employee, but refers to institutions.
      */
     mapping(address => bytes32) institution;
-
+    function getInstitution(address institutionAddr) public constant returns (bytes32){
+        return institution[institutionAddr];
+    }
     /*
      * request(Addr, Post, Start, End)
      *
@@ -161,6 +166,40 @@ contract ChainVitae{
         return hash;
     }
     
+    function cancel(bytes32 hash) public{
+        require(msg.sender == records[hash].data.employeeAddr);
+        address institutionAddr = records[hash].data.institutionAddr;
+        bytes32 temp0 = records[hash].prev0;
+        bytes32 temp1 = records[hash].prev1;
+        bytes32 temp2 = records[hash].next0;
+        bytes32 temp3 = records[hash].next1;
+        
+        if (temp0 == 0){
+            head[msg.sender][0] = temp2;
+        }
+        else{
+            records[temp0].next0 = temp2;
+        }
+        if (temp1 == 0){
+            head[institutionAddr][0] = temp3;
+        }
+        else{
+            records[temp1].next1 = temp3;
+        }
+        if (temp2 == 0){
+            tail[msg.sender][0] = temp0;
+        }
+        else{
+            records[temp2].prev0 = temp0;
+        }
+        if (temp3 == 0){
+            tail[msg.sender][0] = temp1;
+        }
+        else{
+            records[temp3].prev1 = temp1;
+        }
+        delete records[hash];
+    }
     /*
      * endorse(hash)
      *
@@ -286,6 +325,8 @@ contract ChainVitae{
      *     key to next node of Addr's pending hashlist, relative to Hash: otherwise.
      */
     function getNextPending(bytes32 hash, address addr) public constant returns (bytes32){
+        require(msg.sender == addr);
+        require(isEmployee(addr));
         if (hash == 0){
             return head[addr][0];
         }
@@ -300,6 +341,8 @@ contract ChainVitae{
      * similar to getNextPending(), but for keys to nodes on institution's request hashlist.
      */
     function getNextRequest(bytes32 hash, address addr) public constant returns (bytes32){
+        require(msg.sender == addr);
+        require(isInstitution(addr));
         if (hash == 0){
             return head[addr][0];
         }
@@ -314,6 +357,8 @@ contract ChainVitae{
      * similar to getNextPending(), but for keys to nodes on vitaes hashlist.
      */
     function getNextVitae(bytes32 hash, address addr) public constant returns (bytes32){
+        require(msg.sender == addr);
+        require(isEmployee(addr));
         if (hash == 0){
             return head[addr][1];
         }
@@ -328,6 +373,7 @@ contract ChainVitae{
      * similar to getNextPending(), but for keys to nodes on institution's endorsed hashlist.
      */
     function getNextEndorsed(bytes32 hash, address addr) public constant returns (bytes32){
+        require(msg.sender == addr);
         if (hash == 0){
             return head[addr][1];
         }
@@ -361,3 +407,4 @@ contract ChainVitae{
         return records[hash].data.endTime;
     }
 }
+
