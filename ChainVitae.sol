@@ -85,17 +85,22 @@ contract ChainVitae{
      * bytes32 is used to limit string size.
      */
     mapping(address => bytes32) employee;
-    function getEmployeeName(address employeeAddr) public constant returns (bytes32){
-        return employee[employeeAddr];
-    }
+
     /*
      * institution
      *
      * similar to employee, but refers to institutions.
      */
     mapping(address => bytes32) institution;
-    function getInstitutionName(address institutionAddr) public constant returns (bytes32){
-        return institution[institutionAddr];
+
+    function getName(address addr) public constant returns (bytes32){
+        require(isEmployee(addr) || isInstitution(addr));
+        if (isEmployee(addr)){
+            return employee[addr];
+        }
+        else{
+            return institution[addr];
+        }
     }
     /*
      * request(Addr, Post, Start, End)
@@ -201,6 +206,7 @@ contract ChainVitae{
     
     function registerEmployee(bytes32 name) public{
         require(!isEmployee(msg.sender));
+        require(!isInstitution(msg.sender));
         employee[msg.sender] = name;
     }
     
@@ -219,6 +225,7 @@ contract ChainVitae{
     
     function registerInstitution(bytes32 name) public{
         require(!isInstitution(msg.sender));
+        require(!isEmployee(msg.sender));
         institution[msg.sender] = name;
     }
     
