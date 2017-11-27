@@ -1,6 +1,12 @@
 1.	gas cost
+    must maintain good complexity & in practice
+    every "bit" is money
+    cannot even deploy the contract if too complex
+    String can be arbitrary long
+    encode into bytesxx to contraint the length
+    then decode
 2.	institution name ~= domain name registration problem
 	https://qz.com/994698/domain-name-registration-problems-are-going-to-become-a-lot-worse-when-we-run-out-of-names/
 3.	must be bug-free
 4.	cannot alter/update afterwards
-
+5.  privacy (potentially Hyperledger would be more suitable?)
