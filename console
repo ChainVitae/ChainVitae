@@ -1,1 +1,1 @@
-geth --datadir testChain --networkid 2134 --nodiscover --maxpeers 0 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff --verbosity 2 console
+geth --datadir testChain --networkid 68114 --nodiscover --maxpeers 5 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff --verbosity 2 $@ console
