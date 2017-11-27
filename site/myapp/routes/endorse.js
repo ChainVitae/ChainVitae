@@ -137,9 +137,10 @@ router.get('/ajax', function(req, res, next){
 });
 
 router.get('/endorse', function(req, res, next) {
+    console.log(req.query);
 	if (web3.personal.unlockAccount(req.body.addr)){
 		contract.endorse(
-			req.body.vitae,
+			req.body.hash,
 			{from: req.body.addr, gas: 400000}
 		)
 		res.redirect('/endorse');
