@@ -9,7 +9,8 @@ var pages = [
   "/",
   "career",
   "request",
-  "register"
+  "register",
+  "endorse"
 ]
 
 var app = express();
