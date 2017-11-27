@@ -1,2 +1,4 @@
 rm -rf ./testChain
 geth --datadir testChain --networkid 68114 --nodiscover --maxpeers 5 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --dev --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff init genesis.json
+yes "" | geth --datadir testChain --networkid 68114 --nodiscover --maxpeers 5 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --dev --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff account new
+yes "" | geth --datadir testChain --networkid 68114 --nodiscover --maxpeers 5 --rpcapi eth,web3,personal --rpc --rpccorsdomain "*" --dev --rpcaddr "0.0.0.0" --targetgaslimit 0xffffffff account new
