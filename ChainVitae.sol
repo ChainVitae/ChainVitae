@@ -85,7 +85,7 @@ contract ChainVitae{
      * bytes32 is used to limit string size.
      */
     mapping(address => bytes32) employee;
-    function getEmployee(address employeeAddr) public constant returns (bytes32){
+    function getEmployeeName(address employeeAddr) public constant returns (bytes32){
         return employee[employeeAddr];
     }
     /*
@@ -94,7 +94,7 @@ contract ChainVitae{
      * similar to employee, but refers to institutions.
      */
     mapping(address => bytes32) institution;
-    function getInstitution(address institutionAddr) public constant returns (bytes32){
+    function getInstitutionName(address institutionAddr) public constant returns (bytes32){
         return institution[institutionAddr];
     }
     /*
@@ -134,70 +134,14 @@ contract ChainVitae{
             next0:  0,
             next1:  0
         });
-
-        // employee's pending (=not endorsed) hashlist is empty
-        if (head[msg.sender][0] == 0){
-            // this request becomes the first in employee's pending hashlist
-            head[msg.sender][0] = hash;
-        }
-
-        // employee's pending hashlist is not empty
-        if (tail[msg.sender][0] != 0){
-            // employee's last node of pending hashlist continues to this request
-            records[tail[msg.sender][0]].next0 = hash;
-        }
-
-        // this request becomes last node of employee's pending hashlist
-        tail[msg.sender][0] = hash;
-
-        // institution's requests (=not endorsed) hashlist is empty
-        if (head[institutionAddr][0] == 0){
-            // this request becomes the first in institution's requests hashlist
-            head[institutionAddr][0] = hash;
-        }
-        
-        // institution's requests hashlist is not empty
-        if (tail[institutionAddr][0] != 0){
-            // institution's last node of requests hashlist continues to this request
-            records[tail[institutionAddr][0]].next1 = hash;
-        }
-        // this request becomes last node of institution's requests hashlist
-        tail[institutionAddr][0] = hash;
+        addTail(hash, msg.sender, institutionAddr, 0);
         return hash;
     }
     
     function cancel(bytes32 hash) public{
         require(msg.sender == records[hash].data.employeeAddr);
         address institutionAddr = records[hash].data.institutionAddr;
-        bytes32 temp0 = records[hash].prev0;
-        bytes32 temp1 = records[hash].prev1;
-        bytes32 temp2 = records[hash].next0;
-        bytes32 temp3 = records[hash].next1;
-        
-        if (temp0 == 0){
-            head[msg.sender][0] = temp2;
-        }
-        else{
-            records[temp0].next0 = temp2;
-        }
-        if (temp1 == 0){
-            head[institutionAddr][0] = temp3;
-        }
-        else{
-            records[temp1].next1 = temp3;
-        }
-        if (temp2 == 0){
-            tail[msg.sender][0] = temp0;
-        }
-        else{
-            records[temp2].prev0 = temp0;
-        }
-        if (temp3 == 0){
-            tail[msg.sender][0] = temp1;
-        }
-        else{
-            records[temp3].prev1 = temp1;
-        }
+        removeNode(hash, msg.sender, institutionAddr, 0);
         delete records[hash];
     }
     /*
@@ -218,64 +162,41 @@ contract ChainVitae{
         require(msg.sender == records[hash].data.institutionAddr);
         address employeeAddr = records[hash].data.employeeAddr;
 
-        // temp0 == key to previous node of employee's pending hashlist (relative to this node)
-        bytes32 temp0 = records[hash].prev0;
-        // temp1 == key to previous node of institution's requests hashlist (relative to this node)
-        bytes32 temp1 = records[hash].prev1;
-        // temp2 == key to next node of employee's pending hashlist (relative to this node)
-        bytes32 temp2 = records[hash].next0;
-        // temp3 == key to next node of institution's requests hashlist (relative to this node)
-        bytes32 temp3 = records[hash].next1;
-
-        // this node is (not) first node of employee's pending hashlist
-        if (temp0 == 0){
-            head[employeeAddr][0] = temp2;
-        }
-        else{
-            records[temp0].next0 = temp2;
-        }
-
-        // this node is (not) first node of institution's requests hashlist
-        if (temp1 == 0){
-            head[msg.sender][0] = temp3;
-        }
-        else{
-            records[temp1].next1 = temp3;
-        }
-
-        // this node is (not) last node of employee's pending hashlist
-        if (temp2 == 0){
-            tail[employeeAddr][0] = temp0;
-        }
-        else{
-            records[temp2].prev0 = temp0;
-        }
-
-        // this node is (not) last node of institution's requests hashlist
-        if (temp3 == 0){
-            tail[msg.sender][0] = temp1;
-        }
-        else{
-            records[temp3].prev1 = temp1;
-        }
-
+        removeNode(hash, employeeAddr, msg.sender, 0);
         // similar to request(), add this node to employee's and institution's endorsed hashlist
-        if (head[employeeAddr][1] == 0){
-            head[employeeAddr][1] = hash;
-        }
-        if (head[msg.sender][1] == 0){
-            head[msg.sender][1] = hash;
-        }
-        if (tail[employeeAddr][1] != 0){
-            records[tail[employeeAddr][1]].next0 = hash;
-        }
-        tail[employeeAddr][1] = hash;
-	records[hash].next0 = 0x0;
-        if (tail[msg.sender][1] != 0){
-            records[tail[msg.sender][1]].next1 = hash;
-        }
-        tail[msg.sender][1] = hash;
-	records[hash].next1 = 0x0;
+        addTail(hash, employeeAddr, msg.sender, 1);
+    }
+    
+    function amend(bytes32 hash, bytes32 positionName, bool academic, uint start, uint end) public{
+        require(msg.sender == records[hash].data.institutionAddr);
+        require(end >= start);
+        address employeeAddr = records[hash].data.employeeAddr;
+        bytes32 newHash = keccak256(
+            records[hash].data.employeeAddr,
+            msg.sender,
+            positionName,
+            academic,
+            start,
+            end
+        );
+        removeNode(hash, employeeAddr, msg.sender, 1);
+        records[newHash] = node({
+            prev0:  tail[employeeAddr][1],
+            prev1:  tail[msg.sender][1],
+            data:
+                vitae({
+                    employeeAddr: employeeAddr,
+                    institutionAddr: msg.sender,
+                    positionName: positionName, 
+                    academic: academic,
+                    startTime: start,
+                    endTime: end
+                }),
+            next0:  0,
+            next1:  0
+        });
+        addTail(newHash, employeeAddr, msg.sender, 1);
+        delete records[hash];
     }
     
     function registerEmployee(bytes32 name) public{
@@ -324,11 +245,10 @@ contract ChainVitae{
      *     key to first node of Addr's pending hashlist: Hash == 0; or
      *     key to next node of Addr's pending hashlist, relative to Hash: otherwise.
      */
-    function getNextPending(bytes32 hash, address addr) public constant returns (bytes32){
-        require(msg.sender == addr);
-        require(isEmployee(addr));
+    function getNextPending(bytes32 hash) public constant returns (bytes32){
+        require(isEmployee(msg.sender));
         if (hash == 0){
-            return head[addr][0];
+            return head[msg.sender][0];
         }
         else{
             return records[hash].next0;
@@ -340,11 +260,10 @@ contract ChainVitae{
      *
      * similar to getNextPending(), but for keys to nodes on institution's request hashlist.
      */
-    function getNextRequest(bytes32 hash, address addr) public constant returns (bytes32){
-        require(msg.sender == addr);
-        require(isInstitution(addr));
+    function getNextRequest(bytes32 hash) public constant returns (bytes32){
+        require(isInstitution(msg.sender));
         if (hash == 0){
-            return head[addr][0];
+            return head[msg.sender][0];
         }
         else{
             return records[hash].next1;
@@ -357,7 +276,6 @@ contract ChainVitae{
      * similar to getNextPending(), but for keys to nodes on vitaes hashlist.
      */
     function getNextVitae(bytes32 hash, address addr) public constant returns (bytes32){
-        require(msg.sender == addr);
         require(isEmployee(addr));
         if (hash == 0){
             return head[addr][1];
@@ -372,10 +290,10 @@ contract ChainVitae{
      *
      * similar to getNextPending(), but for keys to nodes on institution's endorsed hashlist.
      */
-    function getNextEndorsed(bytes32 hash, address addr) public constant returns (bytes32){
-        require(msg.sender == addr);
+    function getNextEndorsed(bytes32 hash) public constant returns (bytes32){
+        require(isInstitution(msg.sender));
         if (hash == 0){
-            return head[addr][1];
+            return head[msg.sender][1];
         }
         else{
             return records[hash].next1;
@@ -405,6 +323,64 @@ contract ChainVitae{
     
     function getEndTime(bytes32 hash) public constant returns (uint){
         return records[hash].data.endTime;
+    }
+    
+    function removeNode(bytes32 hash, address employeeAddr, address institutionAddr, uint8 mode) private{
+        bytes32 temp0 = records[hash].prev0;
+        bytes32 temp1 = records[hash].prev1;
+        bytes32 temp2 = records[hash].next0;
+        bytes32 temp3 = records[hash].next1;
+        
+        // this node is (not) first node of employee's pending hashlist
+        if (temp0 == 0){
+            head[employeeAddr][mode] = temp2;
+        }
+        else{
+            records[temp0].next0 = temp2;
+        }
+
+        // this node is (not) first node of institution's requests hashlist
+        if (temp1 == 0){
+            head[institutionAddr][mode] = temp3;
+        }
+        else{
+            records[temp1].next1 = temp3;
+        }
+
+        // this node is (not) last node of employee's pending hashlist
+        if (temp2 == 0){
+            tail[employeeAddr][mode] = temp0;
+        }
+        else{
+            records[temp2].prev0 = temp0;
+        }
+
+        // this node is (not) last node of institution's requests hashlist
+        if (temp3 == 0){
+            tail[institutionAddr][mode] = temp1;
+        }
+        else{
+            records[temp3].prev1 = temp1;
+        }
+    }
+    
+    function addTail(bytes32 hash, address employeeAddr, address institutionAddr, uint8 mode) private{
+        if (head[employeeAddr][mode] == 0){
+            head[employeeAddr][mode] = hash;
+        }
+        if (tail[employeeAddr][mode] != 0){
+            records[tail[employeeAddr][mode]].next0 = hash;
+        }
+        tail[employeeAddr][mode] = hash;
+        if (head[institutionAddr][mode] == 0){
+            head[institutionAddr][mode] = hash;
+        }
+        if (tail[institutionAddr][mode] != 0){
+            records[tail[institutionAddr][mode]].next1 = hash;
+        }
+        tail[institutionAddr][mode] = hash;
+        records[hash].next0 = 0x0;
+        records[hash].next1 = 0x0;
     }
 }
 
