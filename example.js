@@ -41,7 +41,7 @@ function accStatus(contract, acc){
 		var cur = 0;
 		while (true){
 			cur = contract.getNextPending.call(cur, acc);
-			if (cur == 0){
+			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -51,7 +51,7 @@ function accStatus(contract, acc){
 		cur = 0;
 		while (true){
 			cur = contract.getNextVitae.call(cur, acc);
-			if (cur == 0){
+			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -62,8 +62,8 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc);
-			if (cur == 0){
+			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -73,7 +73,7 @@ function accStatus(contract, acc){
 		cur = 0;
 		while (true){
 			cur = contract.getNextEndorsed.call(cur, acc);
-			if (cur == 0){
+			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
 			}
@@ -96,10 +96,11 @@ if (web3.personal.unlockAccount(accounts[0])){
 	var employeeName = 'aa';
 	contract.registerEmployee(web3.fromAscii(employeeName), {from: accounts[0]});
 }
-if (web3.personal.unlockAccount(accounts[2])){
-	var institutionName = 'CUHK';
-	contract.registerInstitution(web3.fromAscii(institutionName), {from: accounts[2]});
+if (web3.personal.unlockAccount(accounts[1])){
+	var institutionName = 'google';
+	contract.registerInstitution(web3.fromAscii(institutionName), {from: accounts[1]});
 }
+/*
 if (web3.personal.unlockAccount(accounts[0])){
 	var post = 'nothing';
 	var start = 11111;
