@@ -97,7 +97,7 @@ function getVitaes(acc, n) {
   var vitae;
   if (n > 0){
     while (n >= 0){
-      cur = contract.getNextVitae.call(cur, acc, {from: acc});
+      cur = contract.getNextVitae.call(cur, {from: acc});
 	  if (cur == 0 || cur === '0x'){
         console.log('=== End ===');
         break;
@@ -115,7 +115,7 @@ function getVitaes(acc, n) {
   }
   else{
     while (true){
-      cur = contract.getNextVitae.call(cur, acc, {from: acc});
+      cur = contract.getNextVitae.call(cur, {from: acc});
 	  if (cur == 0 || cur === '0x'){
         console.log('=== End ===');
         break;
@@ -144,8 +144,25 @@ router.get('/', function(req, res, next) {
       accStatus(contract, employee);
     acceptedVitaes = getVitaes(employee, 0);
   }
+  var acc = [];
+  for (var i=0; i < accounts.length; i++){
+      var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+      var role;
+      if (tmp.length === 0){
+          tmp = '**************Not Registered**************';
+          role = "";
+      }
+      else{
+          role = contract.isEmployee.call(accounts[i])?'  (Employee)':'   (Institution)';
+      }
+      acc.push({
+          name: tmp,
+          addr: accounts[i],
+          role: role
+      });
+  }
   console.log(acceptedVitaes);
-  res.render('career', { title: 'Express', vitaes: acceptedVitaes , accounts: web3.eth.accounts});
+  res.render('career', { title: 'Express', vitaes: acceptedVitaes , accounts: acc});
 });
 
 router.get('/ajax', function(req, res, next) {

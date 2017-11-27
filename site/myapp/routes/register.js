@@ -117,7 +117,24 @@ function getVitaes(acc, n,console) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('register', { title: 'Express', accounts: accounts});
+  var acc = [];
+  for (var i=0; i < accounts.length; i++){
+      var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+      var role;
+      if (tmp.length === 0){
+          tmp = '**************Not Registered**************';
+          role = "";
+      }
+      else{
+          role = contract.isEmployee.call(accounts[i])?'  (Employee)':'   (Institution)';
+      }
+      acc.push({
+          name: tmp,
+          addr: accounts[i],
+          role: role
+      });
+  }
+  res.render('register', { title: 'Express', accounts: acc});
 });
 
 router.post('/submit', function(req, res, next) {

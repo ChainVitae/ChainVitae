@@ -95,7 +95,7 @@ function getVitaes(acc, n, console) {
   var cur = 0;
   var vitaes = [];
   while (n >= 0){
-    cur = contract.getNextPending.call(cur, acc, {from: acc});
+    cur = contract.getNextPending.call(cur, {from: acc});
     if (cur == 0 || cur === '0x'){
       console.log('=== End ===');
       break;
@@ -120,14 +120,33 @@ router.get('/', function(req, res, next) {
     if (employee != null){
         pendingVitaes = getVitaes(employee, 10 ,console);
     }
-	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: web3.eth.accounts, employee: employee});
+    var acc = [];
+    for (var i=0; i < accounts.length; i++){
+        var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+        var role;
+        if (tmp.length === 0){
+            tmp = '**************Not Registered**************';
+            role = "";
+        }
+        else{
+            role = contract.isEmployee.call(accounts[i])?'  (Employee)':'   (Institution)';
+        }
+        acc.push({
+            name: tmp,
+            addr: accounts[i],
+            role: role
+        });
+    }
+	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: acc, employee: employee});
 });
 
 router.get('/ajax', function(req, res, next) {
 	var employee = req.query.addr;
     var pendingVitaes = [];
     if (employee != null){
-        pendingVitaes = getVitaes(employee, 10 ,console);
+        if (contract.isEmployee.call(employee)){
+            pendingVitaes = getVitaes(employee, 3, console);
+        }
     }
     console.log(typeof(pendingVitaes));
 	res.send(pendingVitaes);
