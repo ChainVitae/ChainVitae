@@ -41,7 +41,7 @@ function accStatus(contract, acc){
 		console.log("Pending:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextPending.call(cur, acc, {from: acc});
+			cur = contract.getNextPending.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -63,7 +63,7 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+			cur = contract.getNextRequest.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -73,7 +73,7 @@ function accStatus(contract, acc){
 		console.log("Endorsed:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextEndorsed.call(cur, acc, {from: acc});
+			cur = contract.getNextEndorsed.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -104,6 +104,7 @@ function getVitaes(acc, n, console) {
       employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
+      academic : contract.getAcademic.call(cur),
       from : contract.getStartTime.call(cur).c[0],
       to : contract.getEndTime.call(cur).c[0],
       hash : cur
@@ -117,11 +118,12 @@ function getVitaes(acc, n, console) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	var institution = req.query.addr;
+    if (institution === undefined || !contract.isInstitution.call(institution)){
+        res.redirect('/');
+    }
 	var requestedVitaes = {};
 	console.log(institution);
-	if (institution != null){
-		requestedVitaes = getVitaes(institution, 10, console);
-	}
+    requestedVitaes = getVitaes(institution, 10, console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
         var tmp = web3.toAscii(contract.getName.call(accounts[i]));
@@ -153,18 +155,29 @@ router.get('/ajax', function(req, res, next){
             requestedVitaes = getVitaes(institution, 3, console);
         }
 	}
+    console.log(requestedVitaes);
     res.send(requestedVitaes);
 });
 
 router.get('/endorse', function(req, res, next) {
     console.log(req.query);
-	if (web3.personal.unlockAccount(req.body.addr)){
+	if (web3.personal.unlockAccount(req.query.addr)){
 		contract.endorse(
-			req.body.hash,
-			{from: req.body.addr, gas: 400000}
+			req.query.hash,
+			{from: req.query.addr, gas: 400000}
 		)
-		res.redirect('/endorse');
+		res.redirect('/endorse?addr='+req.query.addr);
 	}
 })
 
+router.get('/reject', function(req, res, next) {
+    console.log(req.query);
+	if (web3.personal.unlockAccount(req.query.addr)){
+		contract.reject(
+			req.query.hash,
+			{from: req.query.addr, gas: 400000}
+		)
+		res.redirect('/endorse?addr='+req.query.addr);
+	}
+})
 module.exports = router;

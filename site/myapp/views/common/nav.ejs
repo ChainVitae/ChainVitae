@@ -1,10 +1,11 @@
+<!--DOCTYPE HTML-->
   <style>
     .dropdown-menu-right {
         right: 0;
         left: auto;
     }
   </style>
-  <nav class="navbar sticky-top navbar-light" style="background-color: #6A5ACD">
+  <nav class="navbar sticky-top navbar-light" style="background-color: #007BFF">
     <a class="navbar-brand"> ChainVitae</a>
     <div class="dropdown show">
       <a class="btn btn-secondary dropdown-toggle curAddr" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,7 +26,7 @@
         <a class="nav-link" id="navrequest" href="/request">Request</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" id="navcvmaker" href="/cvmaker">CV Maker</a>
+        <a class="nav-link disabled" id="navcvmaker" href="##">CV Maker</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="navregister" href="/register">Register</a>
@@ -39,24 +40,86 @@
   <script>
     var accounts = <%- JSON.stringify(accounts) %>;
     for (var i=0; i < accounts.length; i++){
-      $("#accountList").append(
-        "<li><a class='dropdown-item addr text-right' href='#' onclick='loadVitaes()'>" +
-        //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i].addr + "'>" +
-        accounts[i].name + accounts[i].role + "<br/><small style='color: #D3D3D3'>" +
-        accounts[i].addr +
-        "</small></a></li>"
-      );
+        if (accounts[i].addr === sessionStorage.currentAddress){
+            if (accounts[i].role.length === 0){
+                notRegistered();
+            }
+            else
+            if (accounts[i].role === "  (Employee)"){
+                employee();
+            }
+            else
+            if (accounts[i].role === "   (Institution)"){
+                institution();
+            }
+        }
+        $("#accountList").append(
+            "<li><a class='dropdown-item addr text-right' href='#'>" +
+            //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i].addr + "'>" +
+            accounts[i].name + accounts[i].role + "<br/><small style='color: #D3D3D3'>" +
+            accounts[i].addr +
+            "</small></a></li>"
+        );
     }
     $('.addr').click(function(){
+      sessionStorage.setItem('currentAddress', $(this).find('small').text());
+      $(this).text(function(i, s){
+          var c = s[s.lastIndexOf(')')-1];
+          if (c === undefined){
+              notRegistered();
+          }
+          else
+          if (c === 'e'){
+              employee();
+          }
+          else
+          if (c === 'n'){
+              institution();
+          }
+      })
       $('.curAddr').text($(this).find("small").text());
       $('.curAddr').val($(this).find("small").text());
-      sessionStorage.setItem('currentAddress', $(this).find('small').text());
-    });
-    $(document).ready(function () {
-      $('.curAddr').text(sessionStorage.currentAddress);
-      $('.curAddr').val(sessionStorage.currentAddress);
-      $('#nav' + window.location.pathname.substr(1) + '').attr('href', '#');
-      $('.nav-pills a[href="#"]').addClass("active");
+      loadVitaes();
     });
 
+    $(document).ready(function () {
+        $('.curAddr').text(sessionStorage.currentAddress);
+        $('.curAddr').val(sessionStorage.currentAddress);
+        $('#nav' + window.location.pathname.substr(1) + '').attr('href', '#');
+        $('.nav-pills a[href="#"]').addClass("active");
+    });
+
+    function notRegistered(){
+        console.log('n');
+        if (!window.location.pathname.substr(1).startsWith("register")){
+            window.location="http://localhost:3001/register?addr="+sessionStorage.currentAddress;
+        }
+        $('#navregister').removeClass("disabled");
+        $('.nav-pills a').not($('#navregister')).addClass("disabled");
+        $('.nav-pills a').not($('#navregister')).attr("href", "##");
+    }
+    function employee(){
+        console.log('e');
+        if (!window.location.pathname.substr(1).startsWith("career") && !window.location.pathname.substr(1).startsWith("request")){
+            console.log(sessionStorage.currentAddress);
+            window.location="http://localhost:3001/career?addr="+sessionStorage.currentAddress;
+        }
+        else{
+            $('#navcareer, #navrequest').removeClass("disabled");
+            $('#navcareer').attr("href", "/career?addr=" + sessionStorage.currentAddress);
+            $('#navrequest').attr("href", "/request?addr=" + sessionStorage.currentAddress);
+            $('.nav-pills a').not($('#navcareer, #navrequest')).addClass("disabled");
+            $('.nav-pills a').not($('#navcareer, #navrequest')).attr("href", "##");
+        }
+    }
+    function institution(){
+        console.log('i');
+        if (!window.location.pathname.substr(1).startsWith("endorse")){
+            window.location="http://localhost:3001/endorse?addr="+sessionStorage.currentAddress;
+        }
+        $('#navendorse').removeClass("disabled");
+        $('#navendorse').attr("href", "/endorse?addr=" + sessionStorage.currentAddress);
+        $('.nav-pills a').not($('#navendorse')).addClass("disabled");
+        $('.nav-pills a').not($('#navendorse')).attr("href", "##");
+    }
   </script>

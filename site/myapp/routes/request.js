@@ -41,7 +41,7 @@ function accStatus(contract, acc){
 		console.log("Pending:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextPending.call(cur, acc, {from: acc});
+			cur = contract.getNextPending.call(cur, {from: acc});
             if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -63,7 +63,7 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+			cur = contract.getNextRequest.call(cur, {from: acc});
             if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -73,7 +73,7 @@ function accStatus(contract, acc){
 		console.log("Endorsed:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextEndorsed.call(cur, acc, {from: acc});
+			cur = contract.getNextEndorsed.call(cur, {from: acc});
             if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -104,8 +104,10 @@ function getVitaes(acc, n, console) {
       employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
+      academic : contract.getAcademic.call(cur),
       from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0]
+      to : contract.getEndTime.call(cur).c[0],
+      hash : cur
     });
     n--;
   }
@@ -116,10 +118,11 @@ function getVitaes(acc, n, console) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	var employee = req.query.addr;
-    var pendingVitaes = [];
-    if (employee != null){
-        pendingVitaes = getVitaes(employee, 10 ,console);
+    if (employee === undefined || !contract.isEmployee.call(employee)){
+        res.redirect('/');
     }
+    var pendingVitaes = [];
+    pendingVitaes = getVitaes(employee, 10 ,console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
         var tmp = web3.toAscii(contract.getName.call(accounts[i]));
@@ -153,18 +156,29 @@ router.get('/ajax', function(req, res, next) {
 });
 
 router.post('/submit', function(req, res, next) {
+    console.log(req.body);
+    console.log(typeof req.body.academic !== 'undefined')
 	if (web3.personal.unlockAccount(req.body.employee)){
         console.log('a')
   		contract.request(
 		    req.body.institution,
 		    web3.fromAscii(req.body.position),
-		    true,
+		    typeof req.body.academic !== 'undefined',
 		    req.body.start,
 		    req.body.end,
 		    {from: req.body.employee, gas: 400000}
         );
-		res.redirect('/request');
+		res.redirect('/request?addr='+ req.body.employee);
 	}
 })
 
+router.get('/cancel', function(req, res, next){
+    if (web3.personal.unlockAccount(req.query.addr)){
+        contract.cancel(
+            req.query.hash,
+            {from: req.query.addr, gas: 400000}
+        );
+    }
+    res.redirect('/request?addr='+ req.query.addr);
+})
 module.exports = router;

@@ -2,6 +2,8 @@ rm addr 2>/dev/null
 rm -rf ./testChain
 addr1=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
 addr2=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
+addr3=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
+addr4=$(yes "" | geth --datadir testChain --nodiscover --maxpeers 0 account new | grep Address | sed -r 's/.*\{(.*)\}/\1/')
 rm ./genesis.json
 printf '{\n' > genesis.json
 printf '    "nonce": "0x0000000000000042",\n' >> genesis.json
@@ -12,6 +14,12 @@ printf '        "%s": {\n' $addr1 >> genesis.json
 printf '            "balance": "10000000000000000000000"\n' >> genesis.json
 printf '        },\n' >> genesis.json
 printf '        "%s": {\n' $addr2 >> genesis.json
+printf '            "balance": "10000000000000000000000"\n' >> genesis.json
+printf '        },\n' >> genesis.json
+printf '        "%s": {\n' $addr3 >> genesis.json
+printf '            "balance": "10000000000000000000000"\n' >> genesis.json
+printf '        },\n' >> genesis.json
+printf '        "%s": {\n' $addr4 >> genesis.json
 printf '            "balance": "10000000000000000000000"\n' >> genesis.json
 printf '        }\n' >> genesis.json
 printf '    },\n' >> genesis.json

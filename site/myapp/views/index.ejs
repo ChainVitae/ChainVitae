@@ -2,12 +2,73 @@
 <html>
   <head>
     <% include ./common/script.ejs %>
+    <style>
+      
+      html, body{
+        width: 100%;
+        height: 100%;
+      }
+
+      body{
+        font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      }
+      .header{
+        position: relative;
+        display: table;
+        width: 100%;
+        height: 100%;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+      }
+
+      .text-vertical-center{
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .text-vertical-center h1{
+        font-size: 4.5em;
+        font-weight: 700;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
   <body>
-    <% include ./common/nav.ejs %>
+    <header id="top" class="header">
+      <div class="text-vertical-center">
+        <h1>Start ChainVitae</h1>
+        <br>
+        <div class="dropdown">
+          <a class="btn btn-secondary dropdown-toggle curAddr col-xs-12" href="#" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 335px">
+            Choose account...
+          </a>
 
-    <div class="col-sm-9 off-sm-3 col-md-10 offset-md-2">
-      hello
-    </div>
+          <div id="accountList" class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          </div>
+        </div>
+      </div>`
+    </header>
   </body>
+
+  <script>
+    var accounts = <%- JSON.stringify(accounts) %>;
+    for (var i=0; i < accounts.length; i++){
+        $("#accountList").append(
+            "<li><a class='dropdown-item addr text-center' href='" + (accounts[i].role.length === 0 ? "register" : accounts[i].role === "  (Employee)" ? "request" : "endorse") + "?addr=" + sessionStorage.currentAddress + "'>" +
+            //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i].addr + "'>" +
+            accounts[i].name + accounts[i].role + "<br/><small style='color: #D3D3D3'>" +
+            accounts[i].addr +
+            "</small></a></li>"
+        );
+    }
+    $('.addr').click(function(){
+      $('.curAddr').text($(this).find("small").text());
+      $('.curAddr').val($(this).find("small").text());
+      sessionStorage.setItem('currentAddress', $(this).find('small').text());
+    });
+  </script>
 </html>

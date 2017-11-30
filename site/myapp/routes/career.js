@@ -41,7 +41,7 @@ function accStatus(contract, acc){
 		console.log("Pending:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextPending.call(cur, acc, {from: acc});
+			cur = contract.getNextPending.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -63,7 +63,7 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+			cur = contract.getNextRequest.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -73,7 +73,7 @@ function accStatus(contract, acc){
 		console.log("Endorsed:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextEndorsed.call(cur, acc, {from: acc});
+			cur = contract.getNextEndorsed.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -97,7 +97,7 @@ function getVitaes(acc, n) {
   var vitae;
   if (n > 0){
     while (n >= 0){
-      cur = contract.getNextVitae.call(cur, {from: acc});
+      cur = contract.getNextVitae.call(cur, acc, {from: acc});
 	  if (cur == 0 || cur === '0x'){
         console.log('=== End ===');
         break;
@@ -115,7 +115,7 @@ function getVitaes(acc, n) {
   }
   else{
     while (true){
-      cur = contract.getNextVitae.call(cur, {from: acc});
+      cur = contract.getNextVitae.call(cur, acc, {from: acc});
 	  if (cur == 0 || cur === '0x'){
         console.log('=== End ===');
         break;
@@ -137,13 +137,15 @@ function getVitaes(acc, n) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var employee = req.query.addr;
-  var acceptedVitaes = {false:[], true:[]};
-  if (employee != null){
-      console.log(employee);
-      accStatus(contract, employee);
+    var employee = req.query.addr;
+    console.log(employee);
+    if (employee === undefined || !contract.isEmployee.call(employee)){
+      console.log('redirect');
+      res.redirect('/');
+    }
+    var acceptedVitaes = {false:[], true:[]};
+    accStatus(contract, employee);
     acceptedVitaes = getVitaes(employee, 0);
-  }
   var acc = [];
   for (var i=0; i < accounts.length; i++){
       var tmp = web3.toAscii(contract.getName.call(accounts[i]));

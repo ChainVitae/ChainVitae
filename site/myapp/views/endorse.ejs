@@ -16,10 +16,11 @@
             <td>Employee</td>
             <td>Qualification</td>
             <td>Institution</td>
+            <td>Academic</td>
             <td>Start Date</td>
             <td>End Date</td>
             <td>Endorse</td>
-            <td>Cancel</td>
+            <td>Reject</td>
           </thead>
         </table>
       </div>
@@ -33,7 +34,7 @@
         $.get('endorse/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
             if(vitaes.length == 0) {
               $("#careerBody").append("<tbody>"+
-                "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
+                "<td colspan='9' class='text-center'>" + "No pending at this moment" + "</td>"+
               "</tbody>");
             }
             else{
@@ -43,16 +44,17 @@
                     "<td>" + vitaes[i].employee+ "</td>"+
                     "<td>" + vitaes[i].position + "</td>"+
                     "<td>" + vitaes[i].institution + "</td>"+
+                    "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
                     "<td>" + vitaes[i].from + "</td>"+
                     "<td>" + vitaes[i].to + "</td>" +
                     "<td>" +
                       "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
-                      "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash +
+                      "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash + "&addr=" + sessionStorage.currentAddress +
                       "\"'>" +
                     "</td>" +
                     "<td>" +
-                      "<input type='button' class='btn btn-danger' value='Refuse' onclick='location.href=\"" +
-                      "http://localhost:3001/endorse/refuse?hash=" + vitaes[i].hash +
+                      "<input type='button' class='btn btn-danger' value='Reject' onclick='location.href=\"" +
+                      "http://localhost:3001/endorse/reject?hash=" + vitaes[i].hash + "&addr=" + sessionStorage.currentAddress +
                        "\"'>" +
                     "</td>" +
                   "</tbody>");
@@ -66,7 +68,7 @@
 
     if(vitaes.length == 0) {
       $("#careerBody").append("<tbody>"+
-        "<td colspan='5' class='text-center'>" + "No pending at this moment" + "</td>"+
+        "<td colspan='9' class='text-center'>" + "No pending at this moment" + "</td>"+
       "</tbody>");
     }
     else{
@@ -76,16 +78,19 @@
             "<td>" + vitaes[i].employee+ "</td>"+
             "<td>" + vitaes[i].position + "</td>"+
             "<td>" + vitaes[i].institution + "</td>"+
+            "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
             "<td>" + vitaes[i].from + "</td>"+
             "<td>" + vitaes[i].to + "</td>" +
             "<td>" +
               "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
               "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash +
+              "&addr=" + sessionStorage.currentAddress +
               "\"'>" +
             "</td>" +
             "<td>" +
-              "<input type='button' class='btn btn-danger' value='Refuse' onclick='location.href=\"" +
-              "http://localhost:3001/endorse/refuse?hash=" + vitaes[i].hash +
+              "<input type='button' class='btn btn-danger' value='Reject' onclick='location.href=\"" +
+              "http://localhost:3001/endorse/reject?hash=" + vitaes[i].hash +
+              "&addr=" + sessionStorage.currentAddress +
                "\"'>" +
             "</td>" +
           "</tbody>");
