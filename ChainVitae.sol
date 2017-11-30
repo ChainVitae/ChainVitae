@@ -172,6 +172,13 @@ contract ChainVitae{
         addTail(hash, employeeAddr, msg.sender, 1);
     }
     
+    function reject(bytes32 hash) public{
+        require(msg.sender == records[hash].data.institutionAddr);
+        address employeeAddr = records[hash].data.employeeAddr;
+
+        removeNode(hash, employeeAddr, msg.sender, 0);
+    }
+
     function amend(bytes32 hash, bytes32 positionName, bool academic, uint start, uint end) public{
         require(msg.sender == records[hash].data.institutionAddr);
         require(end >= start);
