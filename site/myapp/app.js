@@ -34,7 +34,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 for (i = 0; i < pages.length; i++)
-    app.use('/'+pages[i], require("./routes/"+ pages[i]));
+    if (pages[i] === "/")
+        app.use('/', require("./routes/index"));
+    else
+        app.use('/'+pages[i], require("./routes/"+ pages[i]));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
