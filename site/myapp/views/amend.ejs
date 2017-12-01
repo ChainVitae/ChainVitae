@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ./common/script.ejs %>
+  </head>
+
+  <body>
+    <% include ./common/nav.ejs %>
+    <div class="col-sm-9 off-sm-3 col-md-10 offset-md-2">
+      <div class="container">
+        <h1 class="text-center top-buffer3"> Requests of Experience </h1>
+        <h3 class="top-buffer3"> Requests </h3>
+        <table class="table table-bordered top-buffer1" id="careerBody">
+          <thead>
+            <th>#</th>
+            <td>Employee</td>
+            <td>Qualification</td>
+            <td>Institution</td>
+            <td>Academic</td>
+            <td>Start Date</td>
+            <td>End Date</td>
+            <td>Endorse</td>
+            <td>Reject</td>
+          </thead>
+        </table>
+      </div>
+    </div>
+
+  </body>
+  <script>
+
+    function loadVitaes(){
+        $('#careerBody > tbody').remove();
+        $.get('endorse/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
+            if(vitaes.length == 0) {
+              $("#careerBody").append("<tbody>"+
+                "<td colspan='9' class='text-center'>" + "No pending at this moment" + "</td>"+
+              "</tbody>");
+            }
+            else{
+                for (var i=0; i<vitaes.length;i++) {
+                  $("#careerBody").append("<tbody>"+
+                    "<th>" + (i+1) +"</th>"+
+                    "<td>" + vitaes[i].employee+ "</td>"+
+                    "<td>" + vitaes[i].position + "</td>"+
+                    "<td>" + vitaes[i].institution + "</td>"+
+                    "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
+                    "<td>" + vitaes[i].from + "</td>"+
+                    "<td>" + vitaes[i].to + "</td>" +
+                    "<td>" +
+                      "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
+                      "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash + "&addr=" + sessionStorage.currentAddress +
+                      "\"'>" +
+                    "</td>" +
+                    "<td>" +
+                      "<input type='button' class='btn btn-danger' value='Reject' onclick='location.href=\"" +
+                      "http://localhost:3001/endorse/reject?hash=" + vitaes[i].hash + "&addr=" + sessionStorage.currentAddress +
+                       "\"'>" +
+                    "</td>" +
+                  "</tbody>");
+                }
+            }
+        });
+    }
+
+    var vitaes = <%- JSON.stringify(vitaes) %>;
+    //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
+
+    if(vitaes.length == 0) {
+      $("#careerBody").append("<tbody>"+
+        "<td colspan='9' class='text-center'>" + "No pending at this moment" + "</td>"+
+      "</tbody>");
+    }
+    else{
+        for (var i=0; i<vitaes.length;i++) {
+          $("#careerBody").append("<tbody>"+
+            "<th>" + (i+1) +"</th>"+
+            "<td>" + vitaes[i].employee+ "</td>"+
+            "<td>" + vitaes[i].position + "</td>"+
+            "<td>" + vitaes[i].institution + "</td>"+
+            "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
+            "<td>" + vitaes[i].from + "</td>"+
+            "<td>" + vitaes[i].to + "</td>" +
+            "<td>" +
+              "<input type='button' class='btn btn-success' value='Endorse' onclick='location.href=\"" +
+              "http://localhost:3001/endorse/endorse?hash=" + vitaes[i].hash +
+              "&addr=" + sessionStorage.currentAddress +
+              "\"'>" +
+            "</td>" +
+            "<td>" +
+              "<input type='button' class='btn btn-danger' value='Reject' onclick='location.href=\"" +
+              "http://localhost:3001/endorse/reject?hash=" + vitaes[i].hash +
+              "&addr=" + sessionStorage.currentAddress +
+               "\"'>" +
+            "</td>" +
+          "</tbody>");
+        }
+    }
+
+  </script>
+</html>
