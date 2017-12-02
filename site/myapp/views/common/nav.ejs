@@ -34,6 +34,9 @@
       <li class="nav-item">
         <a class="nav-link" id="navendorse" href="/endorse">Endorse</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" id="navamend" href="/amend">Amend</a>
+      </li>
     </ul>
   </nav>
 
@@ -114,12 +117,13 @@
     }
     function institution(){
         console.log('i');
-        if (!window.location.pathname.substr(1).startsWith("endorse")){
+        if (!window.location.pathname.substr(1).startsWith("endorse") && !window.location.pathname.substr(1).startsWith("amend")){
             window.location="http://localhost:3001/endorse?addr="+sessionStorage.currentAddress;
         }
-        $('#navendorse').removeClass("disabled");
+        $('#navendorse, #navamend').removeClass("disabled");
         $('#navendorse').attr("href", "/endorse?addr=" + sessionStorage.currentAddress);
-        $('.nav-pills a').not($('#navendorse')).addClass("disabled");
-        $('.nav-pills a').not($('#navendorse')).attr("href", "##");
+        $('#navamend').attr("href", "/amend?addr=" + sessionStorage.currentAddress);
+        $('.nav-pills a').not($('#navendorse, #navamend')).addClass("disabled");
+        $('.nav-pills a').not($('#navendorse, #navamend')).attr("href", "##");
     }
   </script>
