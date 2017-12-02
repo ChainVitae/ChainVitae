@@ -13,7 +13,7 @@
         <div class="card card-outline-secondary top-buffer1">
           <div class="card-block">
             <form class="form" role="form" method="post" action="/register/submit" autocomplete="off">
-              <div class="form-group row top-buffer3">
+              <div class="form-group row top-buffer3" style="margin-top: 1rem">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Address</label>
                 <div class="col-lg-9 mr-1">
                   <input name="address" class="form-control curAddr" type="text" placeholder="No address selected" readonly="readonly">
@@ -27,20 +27,19 @@
               </div>
               <div class="form-group row top-buffer3">
                 <label class="col-lg-2 col-form-label text-center" for="role">Role</label>
-                <div class="col-lg-9 mr-1">
-                  <div class="form-control">
-                  <input type="radio" name="role" value="0">Employee<br>
-                  <input type="radio" name="role" value="1">Institution<br>
-                  </div>
+                <div class="col-lg-9 mr-1 col-form-label">
+                  <input type="radio" name="role" value="0" checked>
+                  <span>Employee</span>
+                    <input type="radio" name="role" value="1">
+                  <span>Institution</span>
                 </div>
-              </div>
-              <div class="text-right">
-                 <button type="submit" class="btn-info btn"> Send </button>
+                <div class="text-right">
+                  <button type="submit" class="btn-info btn"> Send </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
-        <hr />
       </div>
     </div>
   <script>
