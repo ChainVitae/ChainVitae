@@ -1,4 +1,4 @@
 cd site/myapp
 node app.js &
-firefox localhost:3001/
+firefox localhost:3001 &
 cd ../..
