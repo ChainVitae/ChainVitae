@@ -1,4 +1,4 @@
-1.	gas cost
+1	gas cost
     must maintain good complexity & in practice
     every "bit" is money
     cannot even deploy the contract if too complex
@@ -17,3 +17,5 @@ smart contract turing complete
 code snippet
 simple interaction with blockchain
 solidity
+why not searching?
+    - open research
