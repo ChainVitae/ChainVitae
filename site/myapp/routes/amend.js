@@ -4,6 +4,7 @@ var router = express.Router();
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const bs58 = require('bs58');
 var abi = fs.readFileSync('../../chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('../../addr').toString().trim();
@@ -105,8 +106,8 @@ function getVitaes(acc, n, console) {
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       academic : contract.getAcademic.call(cur),
-      from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0],
+      from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
+      to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4),
       hash : cur
     });
     n--;
@@ -115,9 +116,16 @@ function getVitaes(acc, n, console) {
 }
 
 
+function ec(hex){
+    return bs58.encode(Buffer.from(hex.substring(2), 'hex'));
+}
+function dc(b58){
+    if (b58 === undefined) return undefined;
+    return "0x" + bs58.decode(b58).toString('hex');
+}
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	var institution = req.query.addr;
+	var institution = dc(req.query.addr);
     if (institution === undefined || !contract.isInstitution.call(institution)){
         res.redirect('/');
     }
@@ -126,7 +134,7 @@ router.get('/', function(req, res, next) {
     endorsedVitaes = getVitaes(institution, 3, console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
-        var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+        var tmp = web3.toAscii(contract.getName.call(accounts[i])).replace(/\0/g, '');
         var role;
         if (tmp.length === 0){
             tmp = '**************Not Registered**************';
@@ -137,7 +145,7 @@ router.get('/', function(req, res, next) {
         }
         acc.push({
             name: tmp,
-            addr: accounts[i],
+            addr: ec(accounts[i]),
             role: role
         });
     }
@@ -147,7 +155,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/ajax', function(req, res, next){
     console.log(req.query);
-	var institution = req.query.addr;
+	var institution = dc(req.query.addr);
 	var endorsedVitaes = [];
 	if (institution != null){
         if (contract.isInstitution.call(institution)){
@@ -159,18 +167,19 @@ router.get('/ajax', function(req, res, next){
     res.send(endorsedVitaes);
 });
 
-router.get('/submit', function(req, res, next) {
-    console.log(req.query);
-	if (web3.personal.unlockAccount(req.query.addr)){
+router.post('/submit', function(req, res, next) {
+    console.log(req.body);
+    var institution = dc(req.body.addr);
+	if (web3.personal.unlockAccount(institution)){
 		contract.amend(
-			req.query.hash,
-            req.query.pose,
-            req.query.academic,
-            req.query.start,
-            req.query.end,
-			{from: req.query.addr, gas: 400000}
+			req.body.hash,
+            req.body.pose,
+            req.body.academic,
+            new Date(req.body.start).getTime(),
+            new Date(req.body.end).getTime(),
+			{from: institution, gas: 400000}
 		)
-		res.redirect('/amend?addr='+req.query.addr);
+		res.redirect('/amend?addr='+req.body.addr);
 	}
 })
 

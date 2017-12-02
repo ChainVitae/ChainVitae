@@ -4,6 +4,7 @@ var router = express.Router();
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const bs58 = require('bs58');
 var abi = fs.readFileSync('../../chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('../../addr').toString().trim();
@@ -107,8 +108,8 @@ function getVitaes(acc, n) {
         employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
         institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
         position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
-        from : contract.getStartTime.call(cur).c[0],
-        to : contract.getEndTime.call(cur).c[0]
+        from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
+        to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4)
       });
       n--;
     }
@@ -125,8 +126,9 @@ function getVitaes(acc, n) {
         employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
         institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
         position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
-        from : contract.getStartTime.call(cur).c[0],
-        to : contract.getEndTime.call(cur).c[0]
+        from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
+        to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4),
+        hash : ec(cur)
       });
       n--;
     }
@@ -134,11 +136,16 @@ function getVitaes(acc, n) {
   return vitaes;
 }
 
-
+function ec(hex){
+    return bs58.encode(Buffer.from(hex.substring(2), 'hex'));
+}
+function dc(b58){
+    if (b58 === undefined) return undefined;
+    return "0x" + bs58.decode(b58).toString('hex');
+}
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    var employee = req.query.addr;
-    console.log(employee);
+    var employee = dc(req.query.addr);
     if (employee === undefined || !contract.isEmployee.call(employee)){
       console.log('redirect');
       res.redirect('/');
@@ -159,7 +166,7 @@ router.get('/', function(req, res, next) {
       }
       acc.push({
           name: tmp,
-          addr: accounts[i],
+          addr: ec(accounts[i]),
           role: role
       });
   }
@@ -168,7 +175,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/ajax', function(req, res, next) {
-    var employee = req.query.addr;
+    var employee = dc(req.query.addr);
     var acceptedVitaes = {false:[], true:[]};
     if (employee != null){
         acceptedVitaes = getVitaes(employee, 0);

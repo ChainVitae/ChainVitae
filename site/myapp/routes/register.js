@@ -4,6 +4,7 @@ var router = express.Router();
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const bs58 = require('bs58');
 var abi = fs.readFileSync('../../chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('../../addr').toString().trim();
@@ -115,6 +116,13 @@ function getVitaes(acc, n,console) {
 }
 
 
+function ec(hex){
+    return bs58.encode(Buffer.from(hex.substring(2), 'hex'));
+}
+function dc(b58){
+    if (b58 === undefined) return undefined;
+    return "0x" + bs58.decode(b58).toString('hex');
+}
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var acc = [];
@@ -130,7 +138,7 @@ router.get('/', function(req, res, next) {
       }
       acc.push({
           name: tmp,
-          addr: accounts[i],
+          addr: ec(accounts[i]),
           role: role
       });
   }
@@ -138,7 +146,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/submit', function(req, res, next) {
-    var acc = req.body.address;
+    var acc = dc(req.body.address);
     console.log(req.body);
 	if (req.body.role == 0){
         if (web3.personal.unlockAccount(acc)){

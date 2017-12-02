@@ -4,6 +4,7 @@ var router = express.Router();
 const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+const bs58 = require('bs58');
 var abi = fs.readFileSync('../../chainvitae.abi').toString();
 var accounts = web3.eth.accounts;
 var address = fs.readFileSync('../../addr').toString().trim();
@@ -105,8 +106,8 @@ function getVitaes(acc, n, console) {
       institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       academic : contract.getAcademic.call(cur),
-      from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0],
+      from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
+      to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4),
       hash : cur
     });
     n--;
@@ -114,10 +115,16 @@ function getVitaes(acc, n, console) {
   return vitaes;
 }
 
-
+function ec(hex){
+    return bs58.encode(Buffer.from(hex.substring(2), 'hex'));
+}
+function dc(b58){
+    if (b58 === undefined) return undefined;
+    return "0x" + bs58.decode(b58).toString('hex');
+}
 /* GET home page. */
 router.get('/', function(req, res, next) {
-	var employee = req.query.addr;
+	var employee = dc(req.query.addr);
     if (employee === undefined || !contract.isEmployee.call(employee)){
         res.redirect('/');
     }
@@ -125,7 +132,7 @@ router.get('/', function(req, res, next) {
     pendingVitaes = getVitaes(employee, 10 ,console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
-        var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+        var tmp = web3.toAscii(contract.getName.call(accounts[i])).replace(/\0/g, '');
         var role;
         if (tmp.length === 0){
             tmp = '**************Not Registered**************';
@@ -136,7 +143,7 @@ router.get('/', function(req, res, next) {
         }
         acc.push({
             name: tmp,
-            addr: accounts[i],
+            addr: ec(accounts[i]),
             role: role
         });
     }
@@ -144,7 +151,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/ajax', function(req, res, next) {
-	var employee = req.query.addr;
+	var employee = dc(req.query.addr);
     var pendingVitaes = [];
     if (employee != null){
         if (contract.isEmployee.call(employee)){
@@ -157,26 +164,27 @@ router.get('/ajax', function(req, res, next) {
 
 router.post('/submit', function(req, res, next) {
     console.log(req.body);
-    console.log(typeof req.body.academic !== 'undefined')
-	if (web3.personal.unlockAccount(req.body.employee)){
+    var employee = dc(req.body.employee);
+	if (web3.personal.unlockAccount(employee)){
         console.log('a')
   		contract.request(
-		    req.body.institution,
+		    dc(req.body.institution),
 		    web3.fromAscii(req.body.position),
 		    typeof req.body.academic !== 'undefined',
-		    req.body.start,
-		    req.body.end,
-		    {from: req.body.employee, gas: 400000}
+		    new Date(req.body.start).getTime(),
+		    new Date(req.body.end).getTime(),
+		    {from: employee, gas: 400000}
         );
 		res.redirect('/request?addr='+ req.body.employee);
 	}
 })
 
 router.get('/cancel', function(req, res, next){
-    if (web3.personal.unlockAccount(req.query.addr)){
+    var employee = dc(req.query.addr);
+    if (web3.personal.unlockAccount(employee)){
         contract.cancel(
             req.query.hash,
-            {from: req.query.addr, gas: 400000}
+            {from: employee, gas: 400000}
         );
     }
     res.redirect('/request?addr='+ req.query.addr);

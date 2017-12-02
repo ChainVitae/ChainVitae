@@ -58,7 +58,7 @@
     var accounts = <%- JSON.stringify(accounts) %>;
     for (var i=0; i < accounts.length; i++){
         $("#accountList").append(
-            "<li><a class='dropdown-item addr text-center' href='" + (accounts[i].role.length === 0 ? "register" : accounts[i].role === "  (Employee)" ? "request" : "endorse") + "?addr=" + sessionStorage.currentAddress + "'>" +
+            "<li><a class='dropdown-item addr text-center' href='" + (accounts[i].role.length === 0 ? "register" : accounts[i].role === "  (Employee)" ? "request" : "endorse") + "?addr=" + accounts[i].addr + "'>" +
             //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i].addr + "'>" +
             accounts[i].name + accounts[i].role + "<br/><small style='color: #D3D3D3'>" +
             accounts[i].addr +

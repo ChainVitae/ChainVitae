@@ -2,13 +2,36 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+
+.monospace{
+  font-family: "Consolas", "Lucida Console", Monaco, monospace
+}
+
+.fit{
+  white-space: nowrap;
+  width: 1%;
+}
+
+html, body {
+  height: 100%
+}
+
+.top-buffer3 {
+  margin-top: 60px
+}
+
+.top-buffer1 {
+  margin-top: 20px
+}
+
 a {
   color: #00B7FF;
 }
 
-h1 {
-  padding:10px;
-}
 /*
  * Sidebar
  */

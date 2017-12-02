@@ -1,14 +1,16 @@
 <!--DOCTYPE HTML-->
-  <style>
-    .dropdown-menu-right {
-        right: 0;
-        left: auto;
-    }
-  </style>
   <nav class="navbar sticky-top navbar-light" style="background-color: #007BFF">
-    <a class="navbar-brand"> ChainVitae</a>
+    <a class="navbar-brand" href="/" style="color: #fff"> ChainVitae</a>
+    <div class="nav-item form-inline input-group" style="margin-right:7%; width:45%;">
+      <input type="text" class="form-control monospace" placeholder="Search vitae ID...">
+      <span class="input-group-btn">
+        <button class="btn btn-info" type="button">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+      </span>
+    </div>
     <div class="dropdown show">
-      <a class="btn btn-secondary dropdown-toggle curAddr" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <a class="btn btn-info monospace curAddr" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Choose account...
       </a>
 
@@ -93,18 +95,17 @@
     });
 
     function notRegistered(){
-        console.log('n');
         if (!window.location.pathname.substr(1).startsWith("register")){
             window.location="http://localhost:3001/register?addr="+sessionStorage.currentAddress;
         }
-        $('#navregister').removeClass("disabled");
-        $('.nav-pills a').not($('#navregister')).addClass("disabled");
-        $('.nav-pills a').not($('#navregister')).attr("href", "##");
+        else{
+            $('#navregister').removeClass("disabled");
+            $('.nav-pills a').not($('#navregister')).addClass("disabled");
+            $('.nav-pills a').not($('#navregister')).attr("href", "##");
+        }
     }
     function employee(){
-        console.log('e');
         if (!window.location.pathname.substr(1).startsWith("career") && !window.location.pathname.substr(1).startsWith("request")){
-            console.log(sessionStorage.currentAddress);
             window.location="http://localhost:3001/career?addr="+sessionStorage.currentAddress;
         }
         else{
@@ -116,14 +117,15 @@
         }
     }
     function institution(){
-        console.log('i');
         if (!window.location.pathname.substr(1).startsWith("endorse") && !window.location.pathname.substr(1).startsWith("amend")){
             window.location="http://localhost:3001/endorse?addr="+sessionStorage.currentAddress;
         }
-        $('#navendorse, #navamend').removeClass("disabled");
-        $('#navendorse').attr("href", "/endorse?addr=" + sessionStorage.currentAddress);
-        $('#navamend').attr("href", "/amend?addr=" + sessionStorage.currentAddress);
-        $('.nav-pills a').not($('#navendorse, #navamend')).addClass("disabled");
-        $('.nav-pills a').not($('#navendorse, #navamend')).attr("href", "##");
+        else{
+            $('#navendorse, #navamend').removeClass("disabled");
+            $('#navendorse').attr("href", "/endorse?addr=" + sessionStorage.currentAddress);
+            $('#navamend').attr("href", "/amend?addr=" + sessionStorage.currentAddress);
+            $('.nav-pills a').not($('#navendorse, #navamend')).addClass("disabled");
+            $('.nav-pills a').not($('#navendorse, #navamend')).attr("href", "##");
+        }
     }
   </script>
