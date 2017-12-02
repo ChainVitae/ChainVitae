@@ -13,10 +13,20 @@
         <div class="card card-outline-secondary top-buffer1">
           <div class="card-block">
             <form name="requestForm" class="form" role="form" method="post" action="/request/submit" autocomplete="off" onsubmit="return validateForm()">
-              <div class="form-group row top-buffer1">
+              <div class="form-group row top-buffer1" style="margin-top: 1rem">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
-                <div class="col-lg-9 mr-1">
+                <div class="col-lg-9 mr-1 input-group">
                   <input id="yourAddr" class="form-control curAddr" name="employee" type="text" placeholder="No address selected" readonly="readonly">
+                  <span class="input-group-addon" id="yourName">
+                    <script>
+                        for (var i=0; i < accounts.length;i++){
+                            if (accounts[i].addr === sessionStorage.currentAddress){
+                                $('#yourName').text(accounts[i].name);
+                                break;
+                            }
+                        }
+                    </script>
+                  </span>
                 </div>
               </div>
               <div class="form-group row top-buffer1">
@@ -33,26 +43,35 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label class="col-lg-2 col-form-label form-control-label text-center">Start Date</label>
-                <div class="col-lg-9 mr-1" id="yourStart">
-                  <input class="form-control" name="start" type="text" placeholder="Date when the job started" required>
+                <label class="col-lg-2 col-form-label form-control-label text-center">From</label>
+                <div class="col-lg-3" id="yourStart">
+                  <input class="form-control" name="start" type="date" placeholder="Date when the job started" required>
                 </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-lg-2 col-form-label form-control-label text-center">End Date</label>
-                <div class="col-lg-9 mr-1" id="yourEnd">
-                  <input class="form-control" name="end" type="text" placeholder="Date when the job ended" required>
+                <script>
+                    $('input[name="start"]').change(function(){
+                        $('input[name="end"]').attr('min', $(this).val());
+                    })
+                </script>
+                <div class="col-lg-1"></div>
+                <label class="col-lg-2 col-form-label form-control-label text-center">To</label>
+                <div class="col-lg-3 mr-1" id="yourEnd">
+                  <input class="form-control" name="end" type="date" placeholder="Date when the job ended" required>
                   <div class="invalid-feedback">The end date should come after the start date</div>
                 </div>
+                <script>
+                    $('input[name="end"]').change(function(){
+                        $('input[name="start"]').attr('max', $(this).val());
+                    })
+                </script>
               </div>
               <div class="form-group row">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Academic</label>
                 <div class="col-lg-9 mr-1">
                   <input type="checkbox" name="academic" value="true" style="height:100%;">
                 </div>
-              </div>
-              <div class="text-right">
-                 <button type="submit" class="btn-info btn"> Send </button>
+                <div class="text-right">
+                  <button type="submit" class="btn-info btn"> Send </button>
+                </div>
               </div>
             </form>
           </div>
