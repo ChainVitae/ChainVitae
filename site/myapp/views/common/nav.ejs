@@ -159,8 +159,12 @@
             }
             else{
                 $('#searchResult tbody').html(
-                  "<td>" + vitae.employee + "</td>" +
-                  "<td>" + vitae.institution + "</td>" +
+                  "<td><abbr title='" + vitae.employeeAddr + "'>" + 
+                    vitae.employee +
+                  "</abbr></td>" +
+                  "<td><abbr title='" + vitae.institutionAddr + "'>" +
+                    vitae.institution +
+                  "</abbr></td>" +
                   "<td>" + vitae.pose+ "</td>" +
                   "<td><i class='fa fa-" + (vitae.academic ? "check" : "times") + "'></i></td>" +
                   "<td>" + new Date(vitae.start).toDateString().substring(4) + "</td>" +

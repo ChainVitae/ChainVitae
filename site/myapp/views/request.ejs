@@ -111,7 +111,9 @@
               $("#careerBody").append("<tbody>"+
                 "<th>" + (i+1) +"</th>"+
                 "<td>" + vitaes[i].position + "</td>"+
-                "<td>" + vitaes[i].institution + "</td>"+
+                "<td><abbr title='" + vitae.institutionAddr + "'>" +
+                  vitae.institution +
+                "</abbr></td>" +
                 "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
                 "<td>" + vitaes[i].from + "</td>"+
                 "<td>" + vitaes[i].to + "</td>" +

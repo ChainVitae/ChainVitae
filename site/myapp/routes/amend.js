@@ -101,9 +101,10 @@ function getVitaes(acc, n, console) {
       console.log('=== End ===');
       break;
     }
+    var employeeAddr = contract.getEmployeeAddr(cur);
     vitaes.push({
-      employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
-      institution : web3.toAscii(contract.getInstitutionName.call(cur)).replace(/\0/g, ''),
+      employee : web3.toAscii(contract.getName.call(employeeAddr)).replace(/\0/g, ''),
+        employeeAddr : ec(employeeAddr),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       academic : contract.getAcademic.call(cur),
       from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),

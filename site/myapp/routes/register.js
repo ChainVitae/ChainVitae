@@ -93,26 +93,26 @@ function allStatus(contract, accounts){
 }
 
 function getVitaes(acc, n,console) {
-  var cur = 0;
-  var vitaes = [];
-  var vitae;
-  while (n >= 0){
-    cur = contract.getNextPending.call(cur, acc);
-    console.log(cur);
-	if (cur == 0 || cur === '0x'){
-      console.log('=== End ===');
-      break;
+    var cur = 0;
+    var vitaes = [];
+    var vitae;
+    while (n >= 0){
+        cur = contract.getNextPending.call(cur, acc);
+        console.log(cur);
+        if (cur == 0 || cur === '0x'){
+            console.log('=== End ===');
+            break;
+        }
+        vitaes.push({
+            employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
+            institution : web3.toAscii(contract.getInstitutionName.call(cur)).replace(/\0/g, ''),
+            position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
+            from : contract.getStartTime.call(cur).c[0],
+            to : contract.getEndTime.call(cur).c[0]
+        });
+        n--;
     }
-    vitaes.push({
-      employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
-      institution : web3.toAscii(contract.getInstitutionName.call(cur)).replace(/\0/g, ''),
-      position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
-      from : contract.getStartTime.call(cur).c[0],
-      to : contract.getEndTime.call(cur).c[0]
-    });
-    n--;
-  }
-  return vitaes;
+    return vitaes;
 }
 
 
@@ -125,24 +125,24 @@ function dc(b58){
 }
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var acc = [];
-  for (var i=0; i < accounts.length; i++){
-      var tmp = web3.toAscii(contract.getName.call(accounts[i]));
-      var role;
-      if (tmp.length === 0){
-          tmp = '**************Not Registered**************';
-          role = "";
-      }
-      else{
-          role = contract.isEmployee.call(accounts[i])?'  (Employee)':'   (Institution)';
-      }
-      acc.push({
-          name: tmp,
-          addr: ec(accounts[i]),
-          role: role
-      });
-  }
-  res.render('register', { title: 'Express', accounts: acc});
+    var acc = [];
+    for (var i=0; i < accounts.length; i++){
+        var tmp = web3.toAscii(contract.getName.call(accounts[i]));
+        var role;
+        if (tmp.length === 0){
+            tmp = '**************Not Registered**************';
+            role = "";
+        }
+        else{
+            role = contract.isEmployee.call(accounts[i])?'  (Employee)':'   (Institution)';
+        }
+        acc.push({
+            name: tmp,
+            addr: ec(accounts[i]),
+            role: role
+        });
+    }
+    res.render('register', { title: 'Express', accounts: acc});
 });
 
 router.post('/submit', function(req, res, next) {

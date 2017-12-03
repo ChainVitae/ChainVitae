@@ -46,13 +46,10 @@
             updateTable(vitaes, true);
         });
     }
+
     var vitaes = <%- JSON.stringify(vitaes) %>;
     updateTable(vitaes, false);
     updateTable(vitaes, true);
-    /*var vitaes = {
-      false: [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}],
-      true: []
-    };*/
     function updateTable(vitaes, b){
         var body = '#' + (b ? 'academic' : 'career') + 'Body';
         if(vitaes[b].length == 0) {
@@ -65,7 +62,9 @@
                 "<tbody>"+
                     "<th>" + (i+1) +"</th>"+
                     "<td>" + vitaes[b][i].position + "</td>"+
-                    "<td>" + vitaes[b][i].institution + "</td>"+
+                    "<td><abbr title='" + vitaes[b][i].institutionAddr + "'>" +
+                        vitaes[b][i].institution +
+                    "</abbr></td>"+
                     "<td>" + vitaes[b][i].from + "</td>"+
                     "<td>" + vitaes[b][i].to + "</td>"+
                     "<td class='monospace fit'>" + vitaes[b][i].hash + "</td>"+
