@@ -315,14 +315,22 @@ contract ChainVitae{
     }
    
     // getters for vitae struct 
-    function getEmployee(bytes32 hash) public constant returns (bytes32){
-        return employee[records[hash].data.employeeAddr];
+    function getEmployeeAddr(bytes32 hash) public constant returns (address){
+        return records[hash].data.employeeAddr;
+    }
+
+    function getEmployeeName(bytes32 hash) public constant returns (bytes32){
+        return getName(getEmployeeAddr(hash));
+    }
+
+    function getInstitutionAddr(bytes32 hash) public constant returns (address){
+        return records[hash].data.institutionAddr;
     }
     
-    function getInstitution(bytes32 hash) public constant returns (bytes32){
-        return institution[records[hash].data.institutionAddr];
+    function getInstitutionName(bytes32 hash) public constant returns (bytes32){
+        return getName(getInstitutionAddr(hash));
     }
-    
+
     function getPosition(bytes32 hash) public constant returns (bytes32){
         return records[hash].data.positionName;
     }
