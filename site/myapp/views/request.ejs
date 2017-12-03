@@ -15,9 +15,11 @@
             <form name="requestForm" class="form" role="form" method="post" action="/request/submit" autocomplete="off" onsubmit="return validateForm()">
               <div class="form-group row top-buffer1" style="margin-top: 1rem">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Your Addr</label>
-                <div class="col-lg-9 mr-1 input-group">
+                <div class="col-lg-6 input-group">
                   <input id="yourAddr" class="form-control monospace curAddr" name="employee" type="text" placeholder="No address selected" readonly="readonly">
-                  <span class="input-group-addon" id="yourName">
+                </div>
+                <div class="col-lg-3 mr-1 input-group">
+                  <span class="form-control" id="yourName" readonly>
                     <script>
                         function loadName(){
                             for (var i=0; i < accounts.length;i++){
@@ -29,7 +31,6 @@
                         }
                         loadName();
                         $('#yourAddr').on('input',function(){
-                            console.log('a')
                             loadName();
                         })
                     </script>
@@ -38,8 +39,20 @@
               </div>
               <div class="form-group row top-buffer1">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Company Addr</label>
-                <div class="col-lg-9 mr-1" id="yourInstitution">
+                <div class="col-lg-6 input-group" id="yourInstitution">
                   <input class="form-control monospace" name="institution" type="text" placeholder="Ethereum address of the Company" required>
+                  <button id="searchInstitution" class="input-group-addon" type="button">search</button>
+                </div>
+                <script>
+                    $('#searchInstitution').click(function(){
+                        $.get('/request/search?addr='+$('form input[name=institution]').val(), function(institutionName){
+                            $('#institutionName').text(institutionName);
+                        });
+                    });
+                </script>
+                <div class="col-lg-3 mr-1 input-group" id="yourInstitution">
+                  <span id="institutionName" class="form-control" readonly>
+                  </span>
                 </div>
               </div>
               <div class="form-group row">
@@ -60,12 +73,12 @@
                   </script>
                   <div class="input-group-addon">To</div>
                   <input class="form-control" name="end" type="date" placeholder="Date when the job ended" required>
-                  <script>
+                </div>
+                <script>
                     $('input[name="end"]').change(function(){
                         $('input[name="start"]').attr('max', $(this).val());
                     })
-                  </script>
-                </div>
+                </script>
               </div>
               <div class="form-group row">
                 <label class="col-lg-2 col-form-label form-control-label text-center">Academic</label>
@@ -83,7 +96,7 @@
         <hr />
 
         <h3 class="top-buffer3"> Pending </h3>
-        <table class="table table-bordered top-buffer1" id="careerBody">
+        <table class="table table-bordered top-buffer1">
           <thead>
             <th>#</th>
             <td>Qualification</td>
@@ -93,49 +106,67 @@
             <td>End Date</td>
             <td>Cancel</td>
           </thead>
+          <tbody id="pendingBody">
+          </tbody>
         </table>
       </div>
     </div>
 
   </body>
   <script>
+    loadVitaes();
 
-    function updateTable(vitaes){
-        if(vitaes.length === 0) {
-          $("#careerBody").append("<tbody>"+
-            "<td colspan='7' class='text-center'>" + "No pending at this moment" + "</td>"+
-          "</tbody>");
-        }
-        else{
-            for (var i=0; i<vitaes.length;i++) {
-              $("#careerBody").append("<tbody>"+
-                "<th>" + (i+1) +"</th>"+
-                "<td>" + vitaes[i].position + "</td>"+
-                "<td><abbr title='" + vitae.institutionAddr + "'>" +
-                  vitae.institution +
-                "</abbr></td>" +
-                "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
-                "<td>" + vitaes[i].from + "</td>"+
-                "<td>" + vitaes[i].to + "</td>" +
-                "<td>" +
-                  "<input type='button' class='btn btn-danger' value='Cancel' onclick='location.href=\"" +
-                  "http://localhost:3001/request/cancel?hash=" + vitaes[i].hash +
-                  "&addr=" + sessionStorage.currentAddress +
-                   "\"'>" +
-                "</td>" +
-                "</tbody>");
-            }
-        }
-    }
     function loadVitaes(){
-        $('#careerBody > tbody').remove();
+        $('#pendingBody').html(
+            "<tr>" +
+              "<td colspan='7'>" +
+                "<div class='spinner'>" +
+                  "<div class='rect1'></div>" +
+                  "<div class='rect2'></div>" +
+                  "<div class='rect3'></div>" +
+                  "<div class='rect4'></div>" +
+                  "<div class='rect5'></div>" +
+                "</div>" +
+              "</td>" +
+            "</tr>"
+        );
         $.get('request/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
             updateTable(vitaes);
         });
     }
-    var vitaes = <%- JSON.stringify(vitaes) %>;
-    //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
-    updateTable(vitaes);
+
+    function updateTable(vitaes){
+        if(vitaes.length === 0) {
+          $("#pendingBody").html(
+            "<tr>" +
+              "<td colspan='7' class='text-center'>" + "No pending at this moment" + "</td>"+
+            "</tr>"
+          );
+        }
+        else{
+            $('#pendingBody').html('');
+            for (var i=0; i<vitaes.length;i++) {
+                $("#pendingBody").append(
+                    "<tr>" +
+                      "<th>" + (i+1) +"</th>"+
+                      "<td>" + vitaes[i].position + "</td>"+
+                      "<td><abbr title='" + vitaes[i].institutionAddr + "'>" +
+                        vitaes[i].institution +
+                      "</abbr></td>" +
+                      "<td><i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "'></i></td>"+
+                      "<td>" + vitaes[i].from + "</td>"+
+                      "<td>" + vitaes[i].to + "</td>" +
+                      "<td>" +
+                        "<input type='button' class='btn btn-danger' value='Cancel' onclick='location.href=\"" +
+                        "http://localhost:3001/request/cancel?hash=" + vitaes[i].hash +
+                        "&addr=" + sessionStorage.currentAddress +
+                        "\"'>" +
+                      "</td>" +
+                    "</tr>"
+                );
+            }
+        }
+    }
 
     $("#accountList a").click(function(){
         $('.curAddr').text(sessionStorage.currentAddress);

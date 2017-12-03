@@ -129,8 +129,6 @@ router.get('/', function(req, res, next) {
     if (employee === undefined || !contract.isEmployee.call(employee)){
         res.redirect('/');
     }
-    var pendingVitaes = [];
-    pendingVitaes = getVitaes(employee, 10 ,console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
         var tmp = web3.toAscii(contract.getName.call(accounts[i])).replace(/\0/g, '');
@@ -148,7 +146,7 @@ router.get('/', function(req, res, next) {
             role: role
         });
     }
-	res.render('request', { title: 'Express', vitaes: pendingVitaes, accounts: acc, employee: employee});
+	res.render('request', { title: 'Express', accounts: acc, employee: employee});
 });
 
 router.get('/ajax', function(req, res, next) {
@@ -192,6 +190,15 @@ router.get('/cancel', function(req, res, next){
 })
 
 router.get('/search', function(req, res, next){
-    res.redirect('/');
+    console.log("hello");
+    var institution = dc(req.query.addr);
+    if (contract.isInstitution.call(institution)){
+        var institutionName = web3.toAscii(contract.getName.call(institution)).replace(/\0/g,'');
+        if (institutionName.length !== 0){
+            res.send(institutionName);
+            return;
+        }
+    }
+    res.send('');
 })
 module.exports = router;

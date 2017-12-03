@@ -10,7 +10,7 @@
         <div class="container">
           <h1 class="text-center top-buffer3"> CV </h1>
           <h3 class="top-buffer1"> Career Experience</h3>
-          <table class="table table-bordered top-buffer1" id="careerBody">
+          <table class="table table-bordered top-buffer1">
             <thead>
               <th>#</th>
               <td>Position</td>
@@ -19,10 +19,12 @@
               <td>End Date</td>
               <td>Vitae ID</td>
             </thead>
+            <tbody id="careerBody">
+            </tbody>
           </table>
             <hr />
             <h3 class="top-buffer3"> Academic History</h3>
-          <table class="table table-bordered top-buffer1" id="academicBody">
+          <table class="table table-bordered top-buffer1">
             <thead>
               <th>#</th>
               <td>Qualification</td>
@@ -31,45 +33,74 @@
               <td>End Date</td>
               <td>Vitae ID</td>
             </thead>
+            <tbody id="academicBody">
+            </tbody>
           </table>
           </div>
       </div>
 
   </body>
   <script>
+    loadVitaes();
 
     function loadVitaes(){
-        $('#careerBody > tbody').remove();
-        $('#academicBody > tbody').remove();
-        $.get('/career/ajax?addr='+$('.curAddr#dropdownMenuLink').text(), function(vitaes){
+        $('#careerBody').html(
+            "<tr>" +
+              "<td colspan='6'>" +
+                "<div class='spinner'>" +
+                  "<div class='rect1'></div>" +
+                  "<div class='rect2'></div>" +
+                  "<div class='rect3'></div>" +
+                  "<div class='rect4'></div>" +
+                  "<div class='rect5'></div>" +
+                "</div>" +
+              "</td>" +
+            "</tr>"
+        );
+        $('#academicBody').html(
+            "<tr>" +
+              "<td colspan='6'>" +
+                "<div class='spinner'>" +
+                  "<div class='rect1'></div>" +
+                  "<div class='rect2'></div>" +
+                  "<div class='rect3'></div>" +
+                  "<div class='rect4'></div>" +
+                  "<div class='rect5'></div>" +
+                "</div>" +
+              "</td>" +
+            "</tr>"
+        );
+        $.get('/career/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
             updateTable(vitaes, false);
             updateTable(vitaes, true);
         });
     }
 
-    var vitaes = <%- JSON.stringify(vitaes) %>;
-    updateTable(vitaes, false);
-    updateTable(vitaes, true);
     function updateTable(vitaes, b){
         var body = '#' + (b ? 'academic' : 'career') + 'Body';
         if(vitaes[b].length == 0) {
-          $(body).append("<tbody>"+
-            "<td colspan='6' class='text-center'>" + "<h1>I get no " + (b?"schools":"jobs") +"</h1>" + "</td>"+
-          "</tbody>");
+          $(body).html(
+            "<tr>" +
+              "<td colspan='6' class='text-center'>" + "<h1>I get no " + (b?"schools":"jobs") +"</h1>" + "</td>"+
+            "</tr>"
+          );
         }
-        for (var i=0; i<vitaes[b].length;i++) {
-            $(body).append(
-                "<tbody>"+
-                    "<th>" + (i+1) +"</th>"+
-                    "<td>" + vitaes[b][i].position + "</td>"+
-                    "<td><abbr title='" + vitaes[b][i].institutionAddr + "'>" +
-                        vitaes[b][i].institution +
-                    "</abbr></td>"+
-                    "<td>" + vitaes[b][i].from + "</td>"+
-                    "<td>" + vitaes[b][i].to + "</td>"+
-                    "<td class='monospace fit'>" + vitaes[b][i].hash + "</td>"+
-                "</tbody>"
-            );
+        else{
+            $(body).html('');
+            for (var i=0; i<vitaes[b].length;i++) {
+                $(body).append(
+                    "<tr>"+
+                      "<th>" + (i+1) +"</th>"+
+                      "<td>" + vitaes[b][i].position + "</td>"+
+                      "<td><abbr title='" + vitaes[b][i].institutionAddr + "'>" +
+                          vitaes[b][i].institution +
+                      "</abbr></td>"+
+                      "<td>" + vitaes[b][i].from + "</td>"+
+                      "<td>" + vitaes[b][i].to + "</td>"+
+                      "<td class='monospace fit'>" + vitaes[b][i].hash + "</td>"+
+                    "</tr>"
+                );
+            }
         }
     }
   </script>

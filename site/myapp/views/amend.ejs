@@ -10,7 +10,7 @@
       <div class="container">
         <h1 class="text-center top-buffer3"> Endorsement History </h1>
         <h3 class="top-buffer3"> History </h3>
-        <table class="table table-bordered top-buffer1" id="careerBody">
+        <table class="table table-bordered top-buffer1">
           <thead>
             <th>#</th>
             <td>Employee</td>
@@ -19,47 +19,74 @@
             <td>Start Date</td>
             <td>End Date</td>
           </thead>
+          <tbody id="historyBody">
+          </tbody>
         </table>
       </div>
     </div>
 
   </body>
   <script>
+    loadVitaes();
+
+    function loadVitaes(){
+        $('#historyBody').html(
+            "<tr>" +
+              "<td colspan='8'>" +
+                "<div class='spinner'>" +
+                  "<div class='rect1'></div>" +
+                  "<div class='rect2'></div>" +
+                  "<div class='rect3'></div>" +
+                  "<div class='rect4'></div>" +
+                  "<div class='rect5'></div>" +
+                "</div>" +
+              "</td>" +
+            "</tr>"
+        );
+        $.get('amend/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
+            updateTable(vitaes);
+        });
+    }
 
     function updateTable(vitaes){
         if(vitaes.length == 0) {
-          $("#careerBody").append("<tbody>"+
-            "<td colspan='8' class='text-center'>" + "You have not endorsed anybody." + "</td>"+
-          "</tbody>");
+            $("#historyBody").html(
+                "<tr>" +
+                  "<td colspan='8' class='text-center'>" + "You have not endorsed anybody." + "</td>"+
+                "</tr>"
+            );
         }
         else{
+            $('#historyBody').html('');
             for (var i=0; i<vitaes.length;i++) {
-              $("#careerBody").append("<tbody>"+
-                "<th>" + (i+1) +"</th>"+
-                "<td><abbr title='" + vitaes[i].employeeAddr + "'>" + 
-                  vitaes[i].employee +
-                "</abbr></td>" +
-                "<td>" +
-                    "<span show>" + vitaes[i].position + "</span>" +
-                    "<input class='pose' type='text' hidden></input>" +
-                "</td>"+
-                "<td>" +
-                    "<i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "' show></i>"+
-                    "<input class='academic' type='checkbox' hidden></input>" +
-                "</td>"+
-                "<td>" +
-                    "<span show>" + vitaes[i].from + "</span>" + 
-                    "<input class='start' type='date' hidden></input>" +
-                "</td>"+
-                "<td>" +
-                    "<span show>" + vitaes[i].to + "</span>" + 
-                    "<input class='end' type='date' hidden></input>" +
-                "</td>" +
-                "<td>" +
-                    "<button id='edit' class='btn btn-secondary btn-edit'>Edit</button>" +
-                    "<button id='submit' class='btn btn-success' hash='" + vitaes[i].hash + "' hidden>Confirm</button>" +
-                "</td>" +
-              "</tbody>");
+                $("#historyBody").append(
+                    "<tr>" +
+                      "<th>" + (i+1) +"</th>"+
+                      "<td><abbr title='" + vitaes[i].employeeAddr + "'>" + 
+vitaes[i].employee +
+                      "</abbr></td>" +
+                      "<td>" +
+                        "<span show>" + vitaes[i].position + "</span>" +
+                        "<input class='pose' type='text' hidden></input>" +
+                      "</td>" +
+                      "<td>" +
+                        "<i class='fa fa-4 fa-" + (vitaes[i].academic ? "check" : "times")+ "' show></i>"+
+                        "<input class='academic' type='checkbox' hidden></input>" +
+                      "</td>"+
+                      "<td>" +
+                        "<span show>" + vitaes[i].from + "</span>" + 
+                        "<input class='start' type='date' hidden></input>" +
+                      "</td>"+
+                      "<td>" +
+                        "<span show>" + vitaes[i].to + "</span>" + 
+                        "<input class='end' type='date' hidden></input>" +
+                      "</td>" +
+                      "<td>" +
+                        "<button id='edit' class='btn btn-secondary btn-edit'>Edit</button>" +
+                        "<button id='submit' class='btn btn-success' hash='" + vitaes[i].hash + "' hidden>Confirm</button>" +
+                      "</td>" +
+                    "</tr>"
+                );
             }
             $('input.start').change(function(){
                 $(this).parents('tr').find('td input.end').attr('min', $(this).val());
@@ -69,16 +96,6 @@
             });
         }
     }
-    function loadVitaes(){
-        $('#careerBody > tbody').remove();
-        $.get('amend/ajax?addr='+sessionStorage.currentAddress, function(vitaes){
-            updateTable(vitaes);
-        });
-    }
-
-    var vitaes = <%- JSON.stringify(vitaes) %>;
-    //var vitaes = [{"position": "engineer", "institution": "abc startup", "from": "20170801", "to": "20170901"}];
-    updateTable(vitaes);
 
     $('#edit').click(function(){
         var tmp = $(this).parents('tr').find('td');

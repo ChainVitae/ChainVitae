@@ -151,11 +151,8 @@ router.get('/', function(req, res, next) {
       console.log('redirect');
       res.redirect('/');
     }
-    var acceptedVitaes = {false:[], true:[]};
-    accStatus(contract, employee);
-    acceptedVitaes = getVitaes(employee, 0);
-  var acc = [];
-  for (var i=0; i < accounts.length; i++){
+    var acc = [];
+    for (var i=0; i < accounts.length; i++){
       var tmp = web3.toAscii(contract.getName.call(accounts[i]));
       var role;
       if (tmp.length === 0){
@@ -171,8 +168,7 @@ router.get('/', function(req, res, next) {
           role: role
       });
   }
-  console.log(acceptedVitaes);
-  res.render('career', { title: 'Express', vitaes: acceptedVitaes , accounts: acc});
+  res.render('career', { title: 'Express', accounts: acc});
 });
 
 router.get('/ajax', function(req, res, next) {

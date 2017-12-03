@@ -101,8 +101,10 @@ function getVitaes(acc, n, console) {
       console.log('=== End ===');
       break;
     }
+    var employeeAddr = contract.getEmployeeAddr.call(cur);
     vitaes.push({
-      employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
+      employee : web3.toAscii(contract.getName.call(employeeAddr)).replace(/\0/g, ''),
+      employeeAddr : ec(employeeAddr),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       academic : contract.getAcademic.call(cur),
       from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
@@ -127,9 +129,6 @@ router.get('/', function(req, res, next) {
     if (institution === undefined || !contract.isInstitution.call(institution)){
         res.redirect('/');
     }
-	var requestedVitaes = {};
-	console.log(institution);
-    requestedVitaes = getVitaes(institution, 10, console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
         var tmp = web3.toAscii(contract.getName.call(accounts[i])).replace(/\0/g, '');
@@ -147,8 +146,7 @@ router.get('/', function(req, res, next) {
             role: role
         });
     }
-    console.log(requestedVitaes);
-	res.render('endorse', { title: 'Express', vitaes: requestedVitaes, accounts: acc});
+	res.render('endorse', { title: 'Express', accounts: acc});
 });
 
 router.get('/ajax', function(req, res, next){

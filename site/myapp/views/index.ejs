@@ -66,9 +66,9 @@
         );
     }
     $('.addr').click(function(){
+      sessionStorage.setItem('currentAddress', $(this).find('small').text());
       $('.curAddr').text($(this).find("small").text());
       $('.curAddr').val($(this).find("small").text());
-      sessionStorage.setItem('currentAddress', $(this).find('small').text());
     });
   </script>
 </html>

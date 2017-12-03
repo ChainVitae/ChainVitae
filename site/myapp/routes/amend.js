@@ -130,9 +130,6 @@ router.get('/', function(req, res, next) {
     if (institution === undefined || !contract.isInstitution.call(institution)){
         res.redirect('/');
     }
-	var endorsedVitaes = {};
-	console.log(institution);
-    endorsedVitaes = getVitaes(institution, 3, console);
     var acc = [];
     for (var i=0; i < accounts.length; i++){
         var tmp = web3.toAscii(contract.getName.call(accounts[i])).replace(/\0/g, '');
@@ -150,8 +147,7 @@ router.get('/', function(req, res, next) {
             role: role
         });
     }
-    console.log(endorsedVitaes);
-	res.render('amend', { title: 'Express', vitaes: endorsedVitaes, accounts: acc});
+	res.render('amend', { title: 'Express', accounts: acc});
 });
 
 router.get('/ajax', function(req, res, next){
