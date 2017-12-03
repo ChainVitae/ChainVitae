@@ -1,3 +1,4 @@
+killall node
 cd site/myapp
 node app.js &
 firefox localhost:3001 &
