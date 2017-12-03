@@ -1,5 +1,6 @@
 <!--DOCTYPE HTML-->
   <nav class="navbar sticky-top navbar-light" style="background-color: #007BFF">
+    <a href="/" class="navbar-left"><img style="height: 40px" src="logo/chainVitaeLogo.png"></a>
     <a class="navbar-brand" href="/" style="color: #fff"> ChainVitae</a>
     <div id="searchBar" class="nav-item form-inline input-group" style="margin-right:7%; width:45%;">
       <input type="text" class="form-control monospace" placeholder="Search vitae ID...">
@@ -171,7 +172,7 @@
             }
             else{
                 $('#searchResult tbody tr').html(
-                  "<td><abbr title='" + vitae.employeeAddr + "'>" + 
+                  "<td><abbr title='" + vitae.employeeAddr + "'>" +
                     vitae.employee +
                   "</abbr></td>" +
                   "<td><abbr title='" + vitae.institutionAddr + "'>" +
