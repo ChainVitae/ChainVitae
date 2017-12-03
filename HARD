@@ -10,6 +10,9 @@
 3.	must be bug-free
 4.	cannot alter/update afterwards
 5.  privacy (potentially Hyperledger would be more suitable?)
+6.  very different from normal coding:
+    no pointers/reference deep copy only
+    strings can be arbitrarily long encode into hex decode at 
 
 why choose ethereum
 bitcoin vs ethereum
@@ -19,3 +22,4 @@ simple interaction with blockchain
 solidity
 why not searching?
     - open research
+
