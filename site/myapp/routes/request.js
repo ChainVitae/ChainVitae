@@ -25,9 +25,9 @@ function regStatus(contract, accounts){
 function vitaeStatus(vitae){
 	console.log(vitae);
 	console.log('\tEmployee:\t'+
-		web3.toAscii(contract.getEmployee.call(vitae)));
+		web3.toAscii(contract.getEmployeeName.call(vitae)));
 	console.log('\tInstitution:\t'+
-		web3.toAscii(contract.getInstitution.call(vitae)));
+		web3.toAscii(contract.getInstitutionName.call(vitae)));
 	console.log('\tPosition:\t'+
 		web3.toAscii(contract.getPosition.call(vitae)));
 	console.log('\tFrom:\t\t'+
@@ -102,8 +102,8 @@ function getVitaes(acc, n, console) {
       break;
     }
     vitaes.push({
-      employee : web3.toAscii(contract.getEmployee.call(cur)).replace(/\0/g, ''),
-      institution : web3.toAscii(contract.getInstitution.call(cur)).replace(/\0/g, ''),
+      employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
+      institution : web3.toAscii(contract.getInstitutionName.call(cur)).replace(/\0/g, ''),
       position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
       academic : contract.getAcademic.call(cur),
       from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
@@ -188,5 +188,9 @@ router.get('/cancel', function(req, res, next){
         );
     }
     res.redirect('/request?addr='+ req.query.addr);
+})
+
+router.get('/search', function(req, res, next){
+    res.redirect('/');
 })
 module.exports = router;

@@ -30,7 +30,7 @@
     function updateTable(vitaes){
         if(vitaes.length == 0) {
           $("#careerBody").append("<tbody>"+
-            "<td colspan='9' class='text-center'>" + "You have not amendd anybody." + "</td>"+
+            "<td colspan='9' class='text-center'>" + "You have not endorsed anybody." + "</td>"+
           "</tbody>");
         }
         else{
@@ -61,6 +61,12 @@
                 "</td>" +
               "</tbody>");
             }
+            $('input.start').change(function(){
+                $(this).parents('tr').find('td input.end').attr('min', $(this).val());
+            });
+            $('input.end').change(function(){
+                $(this).parents('tr').find('td input.start').attr('max', $(this).val());
+            });
         }
     }
     function loadVitaes(){
@@ -142,6 +148,8 @@
                         break;
                 }
             }
+            $('input.start').parents('tr').find('td input.end').attr('min', $('input.end').val());
+            $('input.end').parents('tr').find('td input.start').attr('max', $('input.start').val());
             $(this).text("Cancel");
         }
         else{

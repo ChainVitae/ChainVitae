@@ -42,4 +42,28 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'ChainVitae', accounts: acc});
 });
 
+router.get('/search', function(req, res, next){
+    console.log('e')
+    var hash = dc(req.query.hash);
+    try{
+        var employee = web3.toAscii(contract.getEmployeeName.call(hash)).replace(/\0/g, '');
+        if (employee.length === 0){
+            res.send('');
+            return;
+        }
+        var vitae = {
+            employee: employee,
+            institution: web3.toAscii(contract.getInstitutionName.call(hash)).replace(/\0/g, ''),
+            pose: web3.toAscii(contract.getPosition.call(hash)).replace(/\0/g, ''),
+            academic: contract.getAcademic.call(hash),
+            start: new Date(contract.getStartTime.call(hash).c[0]).getTime(),
+            end: new Date(contract.getEndTime.call(hash).c[0]).getTime()
+        };
+        res.json(vitae);
+    }
+    catch(err){
+        console.log(err);
+        res.send('');
+    }
+});
 module.exports = router;

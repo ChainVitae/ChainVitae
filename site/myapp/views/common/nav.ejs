@@ -1,10 +1,28 @@
 <!--DOCTYPE HTML-->
   <nav class="navbar sticky-top navbar-light" style="background-color: #007BFF">
     <a class="navbar-brand" href="/" style="color: #fff"> ChainVitae</a>
-    <div class="nav-item form-inline input-group" style="margin-right:7%; width:45%;">
+    <div id="searchBar" class="nav-item form-inline input-group" style="margin-right:7%; width:45%;">
       <input type="text" class="form-control monospace" placeholder="Search vitae ID...">
-      <span class="input-group-btn">
-        <button class="btn btn-info" type="button">
+      <span class="dropdown input-group-btn">
+        <div id="searchResult" class="dropdown-menu" style="padding: .5rem;">
+          <div class="dropdown-item" style="padding: 0">
+            <table class="table table-bordered" style="margin: 0">
+              <thead>
+                <tr>
+                  <td>Name</td>
+                  <td>Company</td>
+                  <td>Position</td>
+                  <td>Academic</td>
+                  <td>Start Date</td>
+                  <td>End Date</td>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <button id="searchBtn" class="btn btn-info" type="button" data-toggle="dropdown">
           <i class="fa fa-search" aria-hidden="true"></i>
         </button>
       </span>
@@ -61,7 +79,7 @@
         $("#accountList").append(
             "<li><a class='dropdown-item addr text-right' href='#'>" +
             //"<a class='dropdown-item addr' href='/request?addr=" + accounts[i].addr + "'>" +
-            accounts[i].name + accounts[i].role + "<br/><small style='color: #D3D3D3'>" +
+            accounts[i].name + accounts[i].role + "<br/><small class='monospace' style='color: #D3D3D3'>" +
             accounts[i].addr +
             "</small></a></li>"
         );
@@ -128,4 +146,27 @@
             $('.nav-pills a').not($('#navendorse, #navamend')).attr("href", "##");
         }
     }
+    $('#searchBtn').click(function(){
+        console.log('hihi')
+        $('#searchResult').css('left', $('#searchBtn').parent().width() - $('#searchBar').width());
+        $.get('search?hash='+$('#searchBar input').val(), function(vitae, status){
+            if (vitae === ''){
+                $('#searchResult tbody').html(
+                  "<td colspan='6' style='text-align: center;'>"+
+                    "No Result"+
+                  "</td>"
+                );
+            }
+            else{
+                $('#searchResult tbody').html(
+                  "<td>" + vitae.employee + "</td>" +
+                  "<td>" + vitae.institution + "</td>" +
+                  "<td>" + vitae.pose+ "</td>" +
+                  "<td><i class='fa fa-" + (vitae.academic ? "check" : "times") + "'></i></td>" +
+                  "<td>" + new Date(vitae.start).toDateString().substring(4) + "</td>" +
+                  "<td>" + new Date(vitae.end).toDateString().substring(4) + "</td>"
+                );
+            }
+        });
+    });
   </script>
