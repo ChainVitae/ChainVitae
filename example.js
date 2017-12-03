@@ -21,9 +21,9 @@ function regStatus(contract, accounts){
 function vitaeStatus(vitae){
 	console.log(vitae);
 	console.log('\tEmployee:\t'+
-		web3.toAscii(contract.getEmployee.call(vitae)));
+		web3.toAscii(contract.getEmployeeName.call(vitae)));
 	console.log('\tInstitution:\t'+
-		web3.toAscii(contract.getInstitution.call(vitae)));
+		web3.toAscii(contract.getInstitutionName.call(vitae)));
 	console.log('\tPosition:\t'+
 		web3.toAscii(contract.getPosition.call(vitae)));
 	console.log('\tAcademic:\t'+
