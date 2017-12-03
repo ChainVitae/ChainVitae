@@ -190,7 +190,10 @@ router.get('/cancel', function(req, res, next){
 })
 
 router.get('/search', function(req, res, next){
-    console.log("hello");
+    if (req.query.addr === ''){
+        res.send('');
+        return;
+    }
     var institution = dc(req.query.addr);
     if (contract.isInstitution.call(institution)){
         var institutionName = web3.toAscii(contract.getName.call(institution)).replace(/\0/g,'');

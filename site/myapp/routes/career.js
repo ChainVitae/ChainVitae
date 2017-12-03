@@ -103,13 +103,15 @@ function getVitaes(acc, n) {
         console.log('=== End ===');
         break;
       }
-
+            var institutionAddr = contract.getInstitutionAddr(cur);
       vitaes[contract.getAcademic.call(cur)].push({
         employee : web3.toAscii(contract.getEmployeeName.call(cur)).replace(/\0/g, ''),
-        institution : web3.toAscii(contract.getInstitutionName.call(cur)).replace(/\0/g, ''),
+        institution : web3.toAscii(contract.getName.call(institutionAddr)).replace(/\0/g, ''),
+        institutionAddr: ec(institutionAddr),
         position : web3.toAscii(contract.getPosition.call(cur)).replace(/\0/g, ''),
         from : new Date(contract.getStartTime.call(cur).c[0]).toDateString().substring(4),
-        to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4)
+        to : new Date(contract.getEndTime.call(cur).c[0]).toDateString().substring(4),
+        hash : ec(cur)
       });
       n--;
     }

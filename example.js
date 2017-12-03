@@ -40,7 +40,7 @@ function accStatus(contract, acc){
 		console.log("Pending:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextPending.call(cur, acc);
+			cur = contract.getNextPending.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -50,7 +50,7 @@ function accStatus(contract, acc){
 		console.log("Vitaes:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextVitae.call(cur, acc);
+			cur = contract.getNextVitae.call(cur, acc, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -62,7 +62,7 @@ function accStatus(contract, acc){
 		console.log("Requests:");
 		var cur = 0;
 		while (true){
-			cur = contract.getNextRequest.call(cur, acc, {from: acc});
+			cur = contract.getNextRequest.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;
@@ -72,7 +72,7 @@ function accStatus(contract, acc){
 		console.log("Endorsed:");
 		cur = 0;
 		while (true){
-			cur = contract.getNextEndorsed.call(cur, acc);
+			cur = contract.getNextEndorsed.call(cur, {from: acc});
 			if (cur == 0 || cur === '0x'){
 				console.log('=== End ===');
 				break;

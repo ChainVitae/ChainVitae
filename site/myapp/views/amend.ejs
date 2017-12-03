@@ -82,12 +82,103 @@ vitaes[i].employee +
                         "<input class='end' type='date' hidden></input>" +
                       "</td>" +
                       "<td>" +
-                        "<button id='edit' class='btn btn-secondary btn-edit'>Edit</button>" +
-                        "<button id='submit' class='btn btn-success' hash='" + vitaes[i].hash + "' hidden>Confirm</button>" +
+                        "<button class='btn btn-secondary btn-edit'>Edit</button>" +
+                        "<button class='btn btn-success btn-submit' hash='" + vitaes[i].hash + "' hidden>Confirm</button>" +
                       "</td>" +
                     "</tr>"
                 );
             }
+            $('.btn-edit').click(function(){
+                var tmp = $(this).parents('tr').find('td');
+                var show = tmp.find('[show]');
+                var hidden = tmp.find('[hidden]');
+                show.removeAttr('show');
+                show.attr('hidden', '');
+                hidden.removeAttr('hidden');
+                hidden.attr('show', '');
+                if ($(this).text() === "Edit"){
+                    for (var i=0; i < show.length; i++){
+                        console.log(hidden[i].type)
+                        switch(hidden[i].type){
+                            case 'text':
+                                hidden[i].value = show[i].textContent;
+                                break;
+                            case 'checkbox':
+                                if (show[i].classList.contains('fa-check'))
+                                    hidden[i].checked = true;
+                                break;
+                            case 'date':
+                                var dateStr = show[i].textContent.split(' ');
+                                var month = '00';
+                                switch(dateStr[0]){
+                                    case 'Jan':
+                                        month = '01';
+                                        break;
+                                    case 'Feb':
+                                        month = '02';
+                                        break;
+                                    case 'Mar':
+                                        month = '03';
+                                        break;
+                                    case 'Apr':
+                                        month = '04';
+                                        break;
+                                    case 'May':
+                                        month = '05';
+                                        break;
+                                    case 'Jun':
+                                        month = '06';
+                                        break;
+                                    case 'Jul':
+                                        month = '07';
+                                        break;
+                                    case 'Aug':
+                                        month = '08';
+                                        break;
+                                    case 'Sep':
+                                        month = '09';
+                                        break;
+                                    case 'Oct':
+                                        month = '10';
+                                        break;
+                                    case 'Nov':
+                                        month = '11';
+                                        break;
+                                    case 'Dec':
+                                        month = '12';
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                dateStr = [dateStr[2], month, dateStr[1]];
+                                console.log(dateStr)
+                                hidden[i].value = dateStr.join('-');
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    $('input.start').parents('tr').find('td input.end').attr('min', $('input.end').val());
+                    $('input.end').parents('tr').find('td input.start').attr('max', $('input.start').val());
+                    $(this).text("Cancel");
+                }
+                else{
+                    $(this).text("Edit");
+                }
+            });
+
+            $('.btn-submit').click(function(){
+                var vals = $(this).parents('tr').find('td');
+                $.post('amend/submit', {
+                    addr: sessionStorage.currentAddress,
+                    hash: $(this).attr('hash'),
+                    pose: vals.find('.pose').val(),
+                    academic: vals.find('.academic').prop('checked'),
+                    start: vals.find('.start').val(),
+                    end: vals.find('.end').val()
+                })
+                .done(function(){console.log('a');location.reload();});
+            });
             $('input.start').change(function(){
                 $(this).parents('tr').find('td input.end').attr('min', $(this).val());
             });
@@ -97,93 +188,5 @@ vitaes[i].employee +
         }
     }
 
-    $('#edit').click(function(){
-        var tmp = $(this).parents('tr').find('td');
-        var show = tmp.find('[show]');
-        var hidden = tmp.find('[hidden]');
-        show.removeAttr('show');
-        show.attr('hidden', '');
-        hidden.removeAttr('hidden');
-        hidden.attr('show', '');
-        if ($(this).text() === "Edit"){
-            for (var i=0; i < show.length; i++){
-                switch(hidden[i].type){
-                    case 'text':
-                        hidden[i].value = show[i].textContent;
-                        break;
-                    case 'checkbox':
-                        if (show[i].classList.contains('fa-check'))
-                            hidden[i].checked = true;
-                        break;
-                    case 'date':
-                        var dateStr = show[i].textContent.split(' ');
-                        var month = '0';
-                        switch(dateStr[0]){
-                            case 'Jan':
-                                month = 1;
-                                break;
-                            case 'Feb':
-                                month = 2;
-                                break;
-                            case 'Mar':
-                                month = 3;
-                                break;
-                            case 'Apr':
-                                month = 4;
-                                break;
-                            case 'May':
-                                month = 5;
-                                break;
-                            case 'Jun':
-                                month = 6;
-                                break;
-                            case 'Jul':
-                                month = 7;
-                                break;
-                            case 'Aug':
-                                month = 8;
-                                break;
-                            case 'Sep':
-                                month = 9;
-                                break;
-                            case 'Oct':
-                                month = 10;
-                                break;
-                            case 'Nov':
-                                month = 11;
-                                break;
-                            case 'Dec':
-                                month = 12;
-                                break;
-                            default:
-                                break;
-                        }
-                        dateStr = [dateStr[2], ''+month, dateStr[1]];
-                        hidden[i].value = dateStr.join('-');
-                        break;
-                    default:
-                        break;
-                }
-            }
-            $('input.start').parents('tr').find('td input.end').attr('min', $('input.end').val());
-            $('input.end').parents('tr').find('td input.start').attr('max', $('input.start').val());
-            $(this).text("Cancel");
-        }
-        else{
-            $(this).text("Edit");
-        }
-    });
-
-    $('#submit').click(function(){
-        var vals = $(this).parents('tr').find('td');
-        $.post('amend/submit', {
-            addr: sessionStorage.currentAddress,
-            hash: $(this).attr('hash'),
-            pose: vals.find('.pose').val(),
-            academic: vals.find('.academic').prop('checked'),
-            start: vals.find('.start').val(),
-            end: vals.find('.end').val()
-        });
-    });
   </script>
 </html>
