@@ -184,7 +184,7 @@ contract ChainVitae{
         require(end >= start);
         address employeeAddr = records[hash].data.employeeAddr;
         bytes32 newHash = keccak256(
-            records[hash].data.employeeAddr,
+            employeeAddr,
             msg.sender,
             positionName,
             academic,
@@ -393,6 +393,7 @@ contract ChainVitae{
         if (tail[employeeAddr][mode] != 0){
             records[tail[employeeAddr][mode]].next0 = hash;
         }
+        records[hash].prev0 = tail[employeeAddr][mode];
         tail[employeeAddr][mode] = hash;
         if (head[institutionAddr][mode] == 0){
             head[institutionAddr][mode] = hash;
@@ -400,6 +401,7 @@ contract ChainVitae{
         if (tail[institutionAddr][mode] != 0){
             records[tail[institutionAddr][mode]].next1 = hash;
         }
+        records[hash].prev1 = tail[institutionAddr][mode];
         tail[institutionAddr][mode] = hash;
         records[hash].next0 = 0x0;
         records[hash].next1 = 0x0;
